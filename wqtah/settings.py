@@ -50,7 +50,9 @@ THIRD_PARTY_APPS = [
 ]
 
 # local apps list
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'apps.utility'
+]
 
 # Add all apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
