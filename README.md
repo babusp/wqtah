@@ -1,6 +1,6 @@
-# ################### Wqtah-Backend
+## Wqtah-Backend
 
-### #########################Prerequisite:
+# Prerequisite:
 
     * Python 3.8+
     * PostgreSQL 12.2+
