@@ -13,6 +13,10 @@
         ```
         $ pip install -r requirements.txt
         ```
+     * Run command for project dependency:
+        ```
+            rename file .env.sample to .env and put the values
+        ```
      * DB migrations:
         ```
         $ python manage.py migrate
