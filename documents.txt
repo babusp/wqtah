@@ -1,0 +1,6 @@
+### This file are using for documentation directory & file structure
+
+# apps/: used for all apps. such account, authentication..
+# fixtures/: Should all fixture for initial data insertion
+# static/: Should all css, js, images and media files
+# templates/: Should all email templates
