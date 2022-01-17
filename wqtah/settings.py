@@ -16,6 +16,9 @@ from dotenv import load_dotenv
 
 from pathlib import Path
 
+from decouple import config
+config.encoding = 'cp1251'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,11 +50,15 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+
 ]
 
 # local apps list
 LOCAL_APPS = [
-    'apps.utility'
+    'apps.utility',
+    'apps.accounts',
 ]
 
 # Add all apps
@@ -149,3 +156,49 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# rest framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.CoreJSONRenderer',
+        'rest_framework_swagger.renderers.SwaggerUIRenderer',
+        'rest_framework_swagger.renderers.OpenAPIRenderer',
+    ),
+}
+
+
+# SWAGGER-CONFIGURATION
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [],
+    "api_version": '0.1',
+    "api_path": "/",
+    "enabled_methods": [
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '',
+    "is_authenticated": True,
+    "is_superuser": False,
+
+    'SECURITY_DEFINITIONS': {
+        "api_key": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        },
+    },
+}
+
+AUTH_USER_MODEL = 'accounts.User'
+
+# SMS Configuration for TWILIO account
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
