@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 
 from pathlib import Path
 
-from decouple import config
-config.encoding = 'cp1251'
+# from decouple import config
+# config.encoding = 'cp1251'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -199,6 +199,6 @@ SWAGGER_SETTINGS = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # SMS Configuration for TWILIO account
-TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
-TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
+# TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+# TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+# TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
