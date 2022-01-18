@@ -54,7 +54,7 @@ services:
     image: celery
     container_name: dev_celery_beat
     restart: always
-    command: bash -c "celery --pidfile= -A wqtah --app=wqtah.celery.app  beat --loglevel=info"
+    command: bash -c "celery -A wqtah beat -l INFO"
     volumes:
       - .:/usr/src/app
     depends_on:
