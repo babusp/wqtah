@@ -31,7 +31,7 @@ class TestView(TestSetUp):
         res = self.client.post(self.register_url, self.user_data, format="json")
         print("res................", res.data)
 
-        self.assertEqual(res.data['email'], self.user_data['email_or_phoneNo'])
+        self.assertEqual(res.data['email_or_phoneNo'], self.user_data['email_or_phoneNo'])
         self.assertEqual(res.status_code, 201)
 
     def test_user_login_after_verification(self):

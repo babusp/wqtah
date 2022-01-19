@@ -5,21 +5,18 @@ urls file
 from rest_framework import routers
 from django.urls import path, include
 from apps.accounts import views
-# from django.conf.urls import url
+
 
 
 
 # local imports
-from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet, PhoneVerificationAPIViewSet,
-                                      EmailVerificationAPIViewSet, EmailVerificationView,
+from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet
                                       )
 
 router = routers.SimpleRouter()
 
 router.register('login', LoginViewSet, basename='login')
 router.register('signup', RegisterViewSet, basename='signup')
-# router.register('phone-verification', views.PhoneVerificationAPIViewSet, basename='phone_verification_api')
-# router.register('email-verification', views.EmailVerificationAPIViewSet, basename='email_verification_api')
 
 
 urlpatterns = [
@@ -29,11 +26,6 @@ urlpatterns = [
 
 ] + router.urls
 
-# urlpatterns = [
-#     # Login
-#     path('login/', views.auth.LoginViewSet.as_view()),
-#
-# ]
 
 
 
