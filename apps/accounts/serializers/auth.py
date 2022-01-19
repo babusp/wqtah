@@ -8,11 +8,13 @@ from rest_framework import serializers
 
 # local imports
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
+
 from apps.accounts.models.auth import (UserPhoneVerification, UserEmailVerification, User)
 from apps.accounts.managers import UserManager
 from apps.accounts.serializers.validations import ValidateUser
 from apps.accounts.serializers.validations import validate_username
 from apps.accounts.serializers.verifivations import SendEmailVerificationLinkSerializer
+
 
 USER = get_user_model()
 
@@ -68,6 +70,7 @@ class LoginSerializer(serializers.ModelSerializer):
         return {'token': instance.get_token(), 'id': instance.id}
 
 
+      
 class RegisterSerializer(serializers.ModelSerializer):
     """ used to register the user """
 
@@ -93,3 +96,4 @@ class RegisterSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """ used to return the user json """
         return {'detail': SUCCESS_CODE['2001']}
+
