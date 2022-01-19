@@ -8,22 +8,41 @@ from rest_framework import serializers
 # local imports
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
 
+from apps.accounts.models.auth import (User, UserPhoneVerification, UserEmailVerification)
+
 
 USER = get_user_model()
 
 
 class LoginSerializer(serializers.ModelSerializer):
     """ used to verify the login credentials and return the login response """
-    email = serializers.EmailField(max_length=100)
+
+    email_or_phoneNo = serializers.CharField(max_length=170, required=False)
 
     class Meta:
         """ meta class """
-        model = USER
-        fields = ('email', 'password')
+        model = User
+        fields = ('email_or_phoneNo', 'password')
+
+    def validate_username(self, email_or_phoneNo):
+        # user = User.objects.filter(username=username, is_active=False)
+        user = User.objects.filter(email__iexact=email_or_phoneNo, is_active=False).first() or User.objects.filter(phone_no__iexact=email_or_phoneNo, is_active=False).first(),
+
+        if user:
+            user = user[0]
+            serializer = SendEmailVerificationLinkSerializer(data={'email': user.email_or_phoneNo, 'phone_no': user.email_or_phoneNo},
+                                                             context={'user': user, 'request': self.context['request']})
+            if serializer.is_valid():
+                serializer.save()
+            raise serializers.ValidationError(
+                'Sorry! Your account is not active. We have sent you a verification link to activate your account.')
+        return username
 
     def validate(self, attrs):
-        """ used to validate the email and password """
-        user = USER.objects.filter(email__iexact=attrs['email']).first()
+        """ used to validate the email/phoneNo and password """
+
+        user = User.objects.filter(email__iexact=attrs['email_or_phoneNo']).first() or User.objects.filter(phone_no__iexact=attrs['email_or_phoneNo']).first()
+
         if not user:
             raise serializers.ValidationError({'detail': ERROR_CODE['4001']})
         if not user.is_active:
@@ -42,3 +61,4 @@ class LoginSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """ used to return the user json """
         return {'token': instance.get_token(), 'id': instance.id}
+
