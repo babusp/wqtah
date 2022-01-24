@@ -27,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # user_name = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(max_length=100, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
 
@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
 
     # here username_field is django defined field in account model, used for account identification.
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'phone_no'
 
     # list of the field names that will be prompted for when creating a account via the
     # createsuperuser management command.

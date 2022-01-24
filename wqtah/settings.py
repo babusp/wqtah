@@ -15,6 +15,7 @@ from os.path import join
 from dotenv import load_dotenv
 
 from pathlib import Path
+from datetime import timedelta
 
 
 # from decouple import config
@@ -204,4 +205,18 @@ AUTH_USER_MODEL = 'accounts.User'
 # TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
 # TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 # TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+    'AUTH_HEADER_TYPES': "Bearer",
+    'ALGORITHM': 'HS512',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUDIENCE': None,
+    'ISSUER': "your_site_url",
+}
 
