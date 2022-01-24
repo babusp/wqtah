@@ -17,8 +17,10 @@ from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
 
+
 # from decouple import config
 # config.encoding = 'cp1251'
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -204,6 +206,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 # TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
 
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
@@ -216,3 +219,4 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
+

@@ -17,16 +17,19 @@ from rest_framework.response import Response
 
 
 # local imports
+
 from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models.auth import User
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer, LogoutSerializer
+from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer
                                             )
+
 
 USER = get_user_model()
 
 
 # Create your views here.
+
 
 
 class LoginViewSet(GenericViewSet, mixins.CreateModelMixin):
@@ -36,6 +39,7 @@ class LoginViewSet(GenericViewSet, mixins.CreateModelMixin):
         request body: {"email": "example@email.com", "password": "my-password"}
         content-type: Application/json
     """
+
     serializer_class = LoginSerializer
 
 
@@ -51,3 +55,4 @@ class RegisterViewSet(GenericViewSet, mixins.CreateModelMixin):
         content-type: Application/json
     """
     serializer_class = RegisterSerializer
+

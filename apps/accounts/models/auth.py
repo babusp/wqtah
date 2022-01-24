@@ -74,36 +74,3 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
-
-class UserEmailVerification(models.Model):
-    """
-    This class is used to verify user email address
-    """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='email_verification_set')
-    email = models.EmailField()
-    otp = models.CharField(max_length=10, blank=True, null=True)
-    domain = models.URLField(max_length=1000, blank=True, null=True)
-    token = models.CharField(max_length=100, blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-
-    # OTP validity
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    expired_at = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta(object):
-        """ Meta information """
-        db_table = 'user_email_verification'
-
-    def __str__(self):
-        return self.email
-
-    @staticmethod
-    def generate_otp():
-        return ''.join([str(random.randrange(9)) for _ in range(4)])
-
-    @staticmethod
-    def generate_token():
-        return str(datetime.now().timestamp()).replace('.', '')
