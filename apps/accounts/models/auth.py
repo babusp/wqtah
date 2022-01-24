@@ -107,31 +107,3 @@ class UserEmailVerification(models.Model):
     @staticmethod
     def generate_token():
         return str(datetime.now().timestamp()).replace('.', '')
-
-
-class UserPhoneVerification(models.Model):
-    """
-    This class is used to verify user email and their contact no.
-    """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='phone_verification_set')
-    country_code = models.IntegerField()
-    phone = models.CharField(max_length=17)
-    otp = models.CharField(max_length=10)
-    is_verified = models.BooleanField(default=False)
-
-    # OTP validity
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    expired_at = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta(object):
-        """ Meta information """
-        db_table = 'user_phone_verification'
-
-    def __str__(self):
-        return self.phone
-
-    @staticmethod
-    def generate_otp():
-        return ''.join([str(random.randrange(9)) for _ in range(4)])

@@ -38,8 +38,7 @@ class LoginSerializer(serializers.ModelSerializer):
                                                              context={'user': user, 'request': self.context['request']})
             if serializer.is_valid():
                 serializer.save()
-            raise serializers.ValidationError(
-                'Sorry! Your account is not active. We have sent you a verification link to activate your account.')
+            raise serializers.ValidationError({'detail': ERROR_CODE['4008']})
         return user
 
     def validate(self, attrs):

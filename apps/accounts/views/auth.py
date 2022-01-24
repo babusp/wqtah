@@ -4,20 +4,23 @@ auth views
 # django imports
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework import (viewsets, status, mixins)
+from rest_framework.response import Response
+
 
 
 # local imports
 from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models.auth import User
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer
+from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer, LogoutSerializer
                                             )
 
 USER = get_user_model()
