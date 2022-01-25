@@ -46,8 +46,8 @@ class UserManager(BaseUserManager):
         return self._create_user(phone_no, password, False, False,
                                  **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True,
+    def create_superuser(self, phone_no, password, **extra_fields):
+        return self._create_user(phone_no, password, True, True,
                                  **extra_fields)
 
     def get_by_natural_key(self, username):
