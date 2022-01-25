@@ -11,14 +11,13 @@ from apps.accounts import views
 
 # local imports
 
-from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet, PhoneVerificationAPIViewSet
+from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet
                                       )
 router = routers.SimpleRouter()
 
 router.register('login', LoginViewSet, basename='login')
 
 router.register('signup', RegisterViewSet, basename='signup')
-router.register('verify-phone', PhoneVerificationAPIViewSet, basename='verify-phone')
 
 
 urlpatterns = [
