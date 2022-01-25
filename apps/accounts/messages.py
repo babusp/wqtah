@@ -7,6 +7,7 @@ SUCCESS_CODE = {
     '2001': 'User registered successfully.',
     '2002': 'Reset password mail has been sent to your registered email.',
     '2003': 'Password Reset Successfully.',
+    '2004': 'User logged-out successfully'
 }
 
 ERROR_CODE = {

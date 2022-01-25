@@ -9,7 +9,7 @@ from celery import shared_task
 from django.contrib.auth import get_user_model
 
 # Django app import
-from apps.accounts.messages import SMS_TEMPLATE
+from apps.accounts.messages import SMS_TEMPLATE, SUCCESS_CODE
 from apps.services.sms_services import send_sms
 
 USER = get_user_model()
@@ -23,7 +23,8 @@ def logout(user_id, access_token):
     """
     try:
         LOGGER.info("going to logout user with id-{id}".format(id=user_id))
-        LOGGER.info("user logged-out successfully")
+        LOGGER.info({'detail': SUCCESS_CODE['2004']})
+
     except Exception as e:
         LOGGER.error(e)
 

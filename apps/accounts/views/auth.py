@@ -16,8 +16,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 
-
-
 # local imports
 
 from apps.accounts.forms.reset_password import ResetPasswordForm
