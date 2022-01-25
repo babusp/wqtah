@@ -7,6 +7,7 @@ SUCCESS_CODE = {
     '2001': 'User registered successfully.',
     '2002': 'Reset password mail has been sent to your registered email.',
     '2003': 'Password Reset Successfully.',
+    '2004': 'User logged-out successfully'
 }
 
 ERROR_CODE = {
@@ -19,4 +20,10 @@ ERROR_CODE = {
     '4006': "New password and Confirm password are not same.",
     '4007': "Link Expired.",
     '4008': "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
+}
+
+SMS_TEMPLATE = {
+    '0001': {
+        'message': 'Hi {first_name} , \nPlease use {otp} as OTP for verification of your Phone number.'
+    }
 }

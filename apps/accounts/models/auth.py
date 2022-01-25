@@ -30,6 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
+    role = models.IntegerField(default=3)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -74,3 +75,31 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+
+
+class UserPhoneVerification(models.Model):
+    """
+    This class is used to verify user and their contact no.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='phone_verification_set')
+    country_code = models.IntegerField()
+    phone_no = models.CharField(max_length=17)
+    otp = models.CharField(max_length=10)
+    is_verified = models.BooleanField(default=False)
+
+    # OTP validity
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    expired_at = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta(object):
+        """ Meta information """
+        db_table = 'user_phone_verification'
+
+    def __str__(self):
+        return self.phone
+
+    @staticmethod
+    def generate_otp():
+        return ''.join([str(random.randrange(9)) for _ in range(4)])
