@@ -11,20 +11,21 @@ from apps.accounts import views
 
 # local imports
 
-from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet
+from apps.accounts.views.auth import (LoginViewSet, RegisterViewSet, PhoneVerificationAPIViewSet
                                       )
 router = routers.SimpleRouter()
 
 router.register('login', LoginViewSet, basename='login')
 
 router.register('signup', RegisterViewSet, basename='signup')
-
+router.register('verify-phone', PhoneVerificationAPIViewSet, basename='verify-phone')
 
 
 urlpatterns = [
     # path('reset-password', ResetPasswordView.as_view(), name='reset-password'),
 
     # path('verify-email/<int:id>/<str:token>', EmailVerificationView.as_view(), name='verify_email'),
+
 
 
 

@@ -20,3 +20,9 @@ ERROR_CODE = {
     '4007': "Link Expired.",
     '4008': "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
 }
+
+SMS_TEMPLATE = {
+    '0001': {
+        'message': 'Hi {first_name} , \nPlease use {otp} as OTP for verification of your Phone number.'
+    }
+}

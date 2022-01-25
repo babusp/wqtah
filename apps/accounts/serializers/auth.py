@@ -2,6 +2,8 @@
 auth serializer file
 """
 # django imports
+from datetime import datetime, timedelta
+
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import serializers
@@ -9,12 +11,10 @@ from rest_framework import serializers
 # local imports
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
 
-from apps.accounts.models.auth import (User)
+from apps.accounts.models.auth import (User, UserPhoneVerification)
 from apps.accounts.managers import UserManager
-from apps.accounts.serializers.validations import ValidateUser
-from apps.accounts.serializers.validations import validate_username
-from apps.accounts.serializers.verifivations import SendEmailVerificationLinkSerializer
 
+from apps.accounts.tasks.auth import send_sms_otp_task
 
 USER = get_user_model()
 
@@ -35,9 +35,9 @@ class LoginSerializer(serializers.ModelSerializer):
 
         if user:
             user = user[0]
-            serializer = SendEmailVerificationLinkSerializer(data={'email': user.email_or_phoneNo,
-                                                                   'phone_no': user.email_or_phoneNo},
-                                                             context={'user': user, 'request': self.context['request']})
+            serializer = SendPhoneOTPSerializer(data={'email': user.email_or_phoneNo,
+                                                'phone_no': user.email_or_phoneNo},
+                                                context={'user': user, 'request': self.context['request']})
             if serializer.is_valid():
                 serializer.save()
             raise serializers.ValidationError({'detail': ERROR_CODE['4008']})
@@ -46,7 +46,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         """ used to validate the email/phoneNo and password """
 
-        user = User.objects.filter(email__iexact=attrs['email_or_phoneNo']).first()\
+        user = User.objects.filter(email__iexact=attrs['email_or_phoneNo']).first() \
                or User.objects.filter(phone_no__iexact=attrs['email_or_phoneNo']).first()
 
         if not user:
@@ -66,10 +66,12 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """ used to return the user json """
-        return {'token': instance.get_token(), 'id': instance.id}
+        return {'token': instance.get_token(), 'id': instance.id, 'first_name': instance.first_name,
+                'last_name': instance.last_name, 'phone_no': instance.phone_no, 'email': instance.email,
+                'role': instance.role
+                }
 
 
-      
 class RegisterSerializer(serializers.ModelSerializer):
     """ used to register the user """
 
@@ -94,5 +96,4 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """ used to return the user json """
-        return {'detail': SUCCESS_CODE['2001']}
-
+        return {'detail': SUCCESS_CODE['2001'], 'token': instance.get_token()}
