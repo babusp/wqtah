@@ -18,10 +18,14 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     @classmethod
-    def normalize_email(cls, email):
+    # def normalize_email(cls, email):
+    #     """All email providers treat emails in a case-insensitive manner."""
+    #     email = email or ''
+    #     return email.lower()
+    def normalize_email(cls, phone_no):
         """All email providers treat emails in a case-insensitive manner."""
-        email = email or ''
-        return email.lower()
+        phone_no = phone_no or ''
+        return phone_no
 
     def _create_user(self, phone_no, password, is_staff,
                      is_superuser, **extra_fields):
@@ -50,6 +54,9 @@ class UserManager(BaseUserManager):
         return self._create_user(phone_no, password, True, True,
                                  **extra_fields)
 
+    # def get_by_natural_key(self, username):
+    #     return self.get(email__iexact=username)
+
     def get_by_natural_key(self, username):
-        return self.get(email__iexact=username)
+        return self.get(phone_no__iexact=username)
 
