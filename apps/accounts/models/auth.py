@@ -25,12 +25,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     User Model Class
     """
     # user_name = models.CharField(max_length=50, unique=True)
+    Admin = 1
+    BusinessOwner = 2
+    EndUser = 3
+    StaffUser = 4
+    ROLES = (
+        (Admin, 'Admin'),
+        (BusinessOwner, 'BusinessOwner'),
+        (EndUser, 'EndUser'),
+        (StaffUser, 'StaffUser')
+    )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(max_length=100, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
-    role = models.IntegerField(default=3)
+    role = models.IntegerField(default=3, choices=ROLES)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
