@@ -3,7 +3,7 @@ main urls
 """
 # third party imports
 from django.urls import path, include
-from  django.urls import views
+
 
 
 
