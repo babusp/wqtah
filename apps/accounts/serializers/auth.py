@@ -66,6 +66,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """ used to return the user json """
+
         return {'token': instance.get_token(), 'id': instance.id, 'first_name': instance.first_name,
                 'last_name': instance.last_name, 'phone_no': instance.phone_no, 'email': instance.email,
                 'role': instance.role

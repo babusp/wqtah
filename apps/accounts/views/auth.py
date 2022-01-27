@@ -54,4 +54,3 @@ class RegisterViewSet(GenericViewSet, mixins.CreateModelMixin):
         content-type: Application/json
     """
     serializer_class = RegisterSerializer
-
