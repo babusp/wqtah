@@ -237,3 +237,10 @@ CORS_EXPOSE_HEADERS = (
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https?://([a-zA-Z0-9]+[-.])*kiwi-internal[.]com"
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    'https://localhost:4200'
+    'https://wqtah-dev-frontend.kiwi-internal.com'
+)
+
+
