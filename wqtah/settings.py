@@ -229,18 +229,14 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
-CORS_EXPOSE_HEADERS = (
+CORS_EXPOSE_HEADERS = {
     'Access-Control-Allow-Origin: *',
     'Access-Control-Allow-Headers: *'
-)
+}
 
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https?://([a-zA-Z0-9]+[-.])*kiwi-internal[.]com"
-]
-
-CORS_ORIGIN_WHITELIST = (
+CORS_ORIGIN_WHITELIST = [
     '116.75.233.184',
     'https://wqtah-dev-frontend.kiwi-internal.com'
-)
+]
 
 
