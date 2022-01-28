@@ -235,7 +235,6 @@ CORS_EXPOSE_HEADERS = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-    '116.75.233.184',
     'https://wqtah-dev-frontend.kiwi-internal.com'
 ]
 
