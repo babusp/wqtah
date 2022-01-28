@@ -231,10 +231,10 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
-CORS_EXPOSE_HEADERS = {
-    'Access-Control-Allow-Origin: *',
-    'Access-Control-Allow-Headers: *'
-}
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',
+    'https://wqtah-dev-frontend.kiwi-internal.com'
+]
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -247,10 +247,11 @@ CORS_ALLOW_METHODS = (
 
 # enable cors
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:4200',
-    'https://wqtah-dev-frontend.kiwi-internal.com'
-]
+
+CORS_EXPOSE_HEADERS = {
+    'Access-Control-Allow-Origin: *',
+    'Access-Control-Allow-Headers: *'
+}
 
 CORS_ALLOW_HEADERS = (
     'accept',
