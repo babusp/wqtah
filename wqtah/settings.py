@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
 from flask import Flask
-from flask_cors import CORS,cors_origin
+from flask_cors import CORS, cross_origin
 
 
 # from decouple import config
