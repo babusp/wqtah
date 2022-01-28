@@ -239,7 +239,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    'https://localhost:4200'
+    'http://localhost:4200'
     'https://wqtah-dev-frontend.kiwi-internal.com'
 )
 
