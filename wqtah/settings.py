@@ -16,8 +16,6 @@ from dotenv import load_dotenv
 
 from pathlib import Path
 from datetime import timedelta
-from flask import Flask
-from flask_cors import CORS, cross_origin
 
 
 # from decouple import config
@@ -231,27 +229,13 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:4200',
-    'https://wqtah-dev-frontend.kiwi-internal.com'
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:4200',
+#     'https://wqtah-dev-frontend.kiwi-internal.com'
+# ]
 
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-)
-
-# enable cors
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_EXPOSE_HEADERS = {
-    'Access-Control-Allow-Origin: *',
-    'Access-Control-Allow-Headers: *'
-}
+ORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = ['*']
 
 CORS_ALLOW_HEADERS = (
     'accept',
@@ -264,8 +248,8 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
-
 CORS_ALLOW_CREDENTIALS = True
 
+
 # define SECURE PROXY SSL HEADER
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
