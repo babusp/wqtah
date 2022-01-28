@@ -229,4 +229,11 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
+CORS_EXPOSE_HEADERS = (
+    'Access-Control-Allow-Origin: *',
+    'Access-Control-Allow-Headers: *'
+)
 
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^https?://([a-zA-Z0-9]+[-.])*kiwi-internal[.]com"
+]
