@@ -37,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    email = models.EmailField(max_length=100, blank=True)
+    email = models.EmailField(max_length=100, blank=True,unique=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
     role = models.IntegerField(default=3, choices=ROLES)
@@ -58,16 +58,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # list of the field names that will be prompted for when creating a account via the
     # createsuperuser management command.
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["email","first_name"]
 
-    def __str__(self):
-        return self.email
 
     def save(self, *args, **kwargs):
         if not self.id and not self.email:
             self.email = self.email
             
         super(User, self).save(*args, **kwargs)
+        
+    def __str__(self):
+        return self.email
 
     @property
     def full_name(self):
