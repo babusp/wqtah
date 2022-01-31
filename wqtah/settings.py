@@ -36,7 +36,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv('HOST_NAME'), "*"]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 DJANGO_APPS = [
@@ -229,4 +229,40 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': "your_site_url",
 }
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:4200',
+#     'https://wqtah-dev-frontend.kiwi-internal.com'
+# ]
 
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',
+    'https://wqtah-dev-frontend.kiwi-internal.com'
+]
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+CORS_ALLOW_CREDENTIALS = True
+
+
+# define SECURE PROXY SSL HEADER
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

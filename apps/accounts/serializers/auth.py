@@ -77,27 +77,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     """ used to register the user """
 
     class Meta:
-        """ meta class """
         model = USER
-        fields = ('first_name', 'last_name', 'country_code', 'phone_no', 'password')
+        fields = ('first_name', 'last_name',"email", 'country_code', 'phone_no', 'password')
 
-    def validate(self, attrs):
-        """ used to validate the data"""
-        user = USER.objects.filter(phone_no__iexact=attrs['phone_no']).first()
-        if user:
-            raise serializers.ValidationError({'detail': ERROR_CODE['4004']})
-        return attrs
 
-    def create(self, validated_data):
-        """ used to return the user object """
-        user = USER.objects.create(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-
-    def to_representation(self, instance):
-        """ used to return the user json """
-        return {'detail': SUCCESS_CODE['2001'], 'token': instance.get_token()}
 
 
 class SendPhoneOTPSerializer(serializers.ModelSerializer):
