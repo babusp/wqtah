@@ -82,32 +82,3 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
-
-# class SendPhoneOTPSerializer(serializers.ModelSerializer):
-#     """
-#     Send phone OTP serializers
-#     """
-#     class Meta(object):
-#         """ Meta information """
-#         model = UserPhoneVerification
-#         fields = ('id', 'country_code', 'phone_no')
-
-#     def validate(self, attrs):
-#         attrs.update({'user': self.context['user']})
-#         return attrs
-
-#     def create(self, validated_data):
-#         user = self.context['user']
-#         validated_data['otp'] = UserPhoneVerification.generate_otp()
-#         validated_data['expired_at'] = datetime.now() + timedelta(minutes=500)
-
-#         # Deactivate all previous otp generated for the new phone
-#         user.phone_verification_set.update(is_active=False)
-#         instance = super(SendPhoneOTPSerializer, self).create(validated_data)
-#         return instance
-
-#     def save(self, send_otp=True, **kwargs):
-#         instance = super(SendPhoneOTPSerializer, self).save(**kwargs)
-#         if send_otp:
-#             send_sms_otp_task(instance)
-#         return instance
