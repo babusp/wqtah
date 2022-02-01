@@ -7,11 +7,9 @@ from django.contrib.auth import get_user_model, logout
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # local imports
-from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models import User
 from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
 from apps.services.sms_services import send_sms
@@ -91,10 +89,8 @@ class VerifyOTPEndpoint(APIView):
         except User.DoesNotExist:
             return Response({"error": "please check authentication credentils"})
 
-        
         # check otp is valid or not
         if user and user.otp == otp:
             return Response({"message":"opt verified"}, status=status.HTTP_200_OK)
         else:
             return Response({"message":"opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
-
