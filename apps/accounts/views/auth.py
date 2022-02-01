@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # local imports
 from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models import User
-from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
+from apps.accounts.serializers.auth import RegisterSerializer
 from apps.services.sms_services import send_sms
 
 
