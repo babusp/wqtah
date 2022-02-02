@@ -2,7 +2,7 @@
 auth views
 """
 # django imports
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,10 +10,11 @@ from rest_framework.views import APIView
 
 
 # local imports
+from apps.accounts.messages import SUCCESS_CODE
 from apps.accounts.models import User
-from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
-from apps.services.sms_services import send_sms
-
+from apps.accounts.serializers.auth import RegisterSerializer, SendOtpSerializer
+from apps.utility.viewsets import CustomModelPostViewSet
+from apps.utility.common import CustomResponse
 
 USER = get_user_model()
 
@@ -46,39 +47,9 @@ class LoginView(APIView):
             return Response({"error": "please check authentication credentils"})
 
 
-class RegisterView(APIView):
-    """
-    used to register the user and return the token info
-    POST  /signup/
-        request body: {
-                          "first_name": "string",
-                          "email": "user@example.com",
-                          "password": "string"
-                        }
-        content-type: Application/json
-    """
-
-    def post(self, request):
-        import random
-
-        phone = request.data.get("phone_no")
-        password = request.data.get("password")
-        country_code = request.data.get("country_code")
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            # send otp
-            otp = "".join([str(random.randrange(9)) for _ in range(4)])
-            send_sms(country_code, phone, otp)
-
-            # new user
-            user = serializer.save()
-            user.set_password(password)
-            user.otp = otp
-            user.save()
-            return Response(
-                {"messsge": "otp send to your mobile number"},
-                status=status.HTTP_201_CREATED,
-            )
+class RegistrationViewSet(CustomModelPostViewSet):
+    """ View set class to register user """
+    serializer_class = RegisterSerializer
 
 
 class VerifyOTPEndpoint(APIView):
@@ -99,3 +70,13 @@ class VerifyOTPEndpoint(APIView):
             return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SendOTPViewSet(CustomModelPostViewSet):
+    """ View set class to change password """
+    serializer_class = SendOtpSerializer
+
+    def create(self, request, *args, **kwargs):
+        """ overriding for custom response """
+        super(SendOTPViewSet, self).create(request, *args, **kwargs)
+        return CustomResponse(status=200, detail=SUCCESS_CODE['2005']).success_response()

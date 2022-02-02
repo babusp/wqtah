@@ -11,7 +11,7 @@ from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # local imports
-from apps.accounts.constants import Admin, BusinessOwner, EndUser, StaffUser
+from apps.accounts import constants as cons
 from apps.accounts.managers import UserManager
 
 
@@ -20,10 +20,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     User Model Class
     """
     ROLES = (
-        (Admin, 'Admin'),
-        (BusinessOwner, 'BusinessOwner'),
-        (EndUser, 'EndUser'),
-        (StaffUser, 'StaffUser')
+        (cons.ADMIN, 'Admin'),
+        (cons.BUSINESS_OWNER, 'Business Owner'),
+        (cons.END_USER, 'EndUser'),
+        (cons.STAFF_USER, 'StaffUser')
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # list of the field names that will be prompted for when creating a account via the
     # createsuperuser management command.
-    REQUIRED_FIELDS = ["email","first_name"]
+    REQUIRED_FIELDS = ["email", "first_name"]
 
     def save(self, *args, **kwargs):
         if not self.id and not self.email:
@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         super(User, self).save(*args, **kwargs)
         
     def __str__(self):
-        return self.phone_no
+        return str(self.phone_no)
 
     @property
     def full_name(self):

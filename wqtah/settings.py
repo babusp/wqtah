@@ -170,6 +170,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'apps.utility.custom_exception.custom_exception_handler',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.CoreJSONRenderer',
@@ -207,13 +208,10 @@ SWAGGER_SETTINGS = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # SMS Configuration for TWILIO account
-# TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
-# TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
-# TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
 
 TWILIO_ACCOUNT_SID = "AC3cf5aba6cbb981eb723ebd6dc1f10741"
 TWILIO_AUTH_TOKEN = "88d019fea19082be9dd46e958630c164"
-# TWILIO_FROM_CONTACT = +15622225914
+TWILIO_SERVICE_SID = "VA95ebe44d200d769f835b69090592769c"
 TWILIO_FROM_CONTACT = +16205688328
 
 
