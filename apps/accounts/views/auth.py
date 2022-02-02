@@ -7,11 +7,9 @@ from django.contrib.auth import get_user_model, logout
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # local imports
-from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models import User
 from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
 from apps.services.sms_services import send_sms
@@ -65,11 +63,12 @@ class RegisterView(APIView):
 
         phone = request.data.get("phone_no")
         password = request.data.get("password")
+        country_code = request.data.get("country_code")
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             # send otp
             otp = "".join([str(random.randrange(9)) for _ in range(4)])
-            send_sms(phone, otp)
+            send_sms(country_code, phone, otp)
 
             # new user
             user = serializer.save()
@@ -81,8 +80,12 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
+
 class VerifyOTPEndpoint(APIView):
-    def post(self,request):
+    """ Verify OTP """
+
+    def post(self, request):
+        """ post request of otp verification"""
         phone = request.data.get("phone_no")
         otp = request.data.get("otp")
 
@@ -91,10 +94,8 @@ class VerifyOTPEndpoint(APIView):
         except User.DoesNotExist:
             return Response({"error": "please check authentication credentils"})
 
-        
         # check otp is valid or not
         if user and user.otp == otp:
-            return Response({"message":"opt verified"}, status=status.HTTP_200_OK)
+            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
         else:
-            return Response({"message":"opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
