@@ -34,6 +34,7 @@ class LoginView(APIView):
     def post(self, request):
         phone = request.data.get("phone_no")
         password = request.data.get("password")
+
         try:
             user = User.objects.get(phone_no=phone)
         except User.DoesNotExist:
@@ -63,13 +64,14 @@ class RegisterView(APIView):
     def post(self, request):
         import random
 
+        country = request.data.get("country_code")
         phone = request.data.get("phone_no")
         password = request.data.get("password")
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             # send otp
             otp = "".join([str(random.randrange(9)) for _ in range(4)])
-            send_sms(phone, otp)
+            send_sms("+" + country + phone, otp)
 
             # new user
             user = serializer.save()
@@ -81,8 +83,9 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
+
 class VerifyOTPEndpoint(APIView):
-    def post(self,request):
+    def post(self, request):
         phone = request.data.get("phone_no")
         otp = request.data.get("otp")
 
@@ -91,10 +94,10 @@ class VerifyOTPEndpoint(APIView):
         except User.DoesNotExist:
             return Response({"error": "please check authentication credentils"})
 
-        
         # check otp is valid or not
         if user and user.otp == otp:
-            return Response({"message":"opt verified"}, status=status.HTTP_200_OK)
+            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
         else:
-            return Response({"message":"opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response(
+                {"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST
+            )
