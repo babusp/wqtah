@@ -58,6 +58,8 @@ class RegisterView(APIView):
         content-type: Application/json
     """
 
+    serializer_class = RegisterSerializer
+
     def post(self, request):
         import random
 
@@ -79,8 +81,9 @@ class RegisterView(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
+
 class VerifyOTPEndpoint(APIView):
-    def post(self,request):
+    def post(self, request):
         phone = request.data.get("phone_no")
         otp = request.data.get("otp")
 
@@ -91,6 +94,8 @@ class VerifyOTPEndpoint(APIView):
 
         # check otp is valid or not
         if user and user.otp == otp:
-            return Response({"message":"opt verified"}, status=status.HTTP_200_OK)
+            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
         else:
-            return Response({"message":"opt not verified"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST
+            )
