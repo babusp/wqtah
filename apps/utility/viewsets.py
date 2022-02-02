@@ -145,3 +145,10 @@ class CustomModelRetrieveViewSet(RetrieveModelMixin, GenericViewSet):
     A view-set that provides default `list()` actions, and provide a unique response format .
     """
     pass
+
+
+class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
+    """
+    pass

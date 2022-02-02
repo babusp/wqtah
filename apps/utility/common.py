@@ -1,6 +1,8 @@
 """"
 Common file: Used for class based
 """
+import secrets
+import string
 from datetime import datetime
 from rest_framework.response import Response
 
@@ -36,7 +38,7 @@ class CustomResponse:
         :param data: data
         :return: Json response
         """
-        response_data = {"server_date_time": datetime.now(), "detail": self.detail, "data": data}
+        response_data = {"detail": self.detail, "data": data}
         return Response(response_data, status=self.status, **kwargs)
 
     def success_list_response(self, data=None, **kwargs):
@@ -67,3 +69,11 @@ class CustomResponse:
         else:
             detail = self._get_validate_error_string(error)
         return Response({"detail": detail, 'error': error}, status=self.status, **kwargs)
+
+
+def get_random_number(string_length):
+    """
+    :param string_length: int type
+    :return: random string of given length
+    """
+    return int(''.join(secrets.choice(string.digits) for _ in range(string_length)))
