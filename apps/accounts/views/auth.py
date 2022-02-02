@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 
 # local imports
 from apps.accounts.models import User
-from apps.accounts.serializers.auth import RegisterSerializer
+from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
 from apps.services.sms_services import send_sms
 
 
