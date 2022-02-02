@@ -2,32 +2,17 @@
 auth views
 """
 # django imports
-import email
-from urllib import request
-from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views import View
-from django.contrib.auth import authenticate
 
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import (viewsets, status, mixins)
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 
 # local imports
-
-from apps.accounts.forms.reset_password import ResetPasswordForm
-from apps.accounts.models.auth import User
-from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer
-                                            )
-from rest_framework_simplejwt.tokens import RefreshToken
+from apps.accounts.models import User
+from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
+from apps.services.sms_services import send_sms
 
 
 USER = get_user_model()
@@ -43,14 +28,14 @@ class LoginView(APIView):
         request body: {"email": "example@email.com", "password": "my-password"}
         content-type: Application/json
     """
+
     def post(self, request):
-        email = request.data.get("email")
+        phone = request.data.get("phone_no")
         password = request.data.get("password")
         try:
-            user = User.objects.get(email=email)
-            print(user)
+            user = User.objects.get(phone_no=phone)
         except User.DoesNotExist:
-            return Response({"error":"please check authentication credentils"})
+            return Response({"error": "please check authentication credentils"})
 
         # check user is authenticater or not
         verified = user.check_password(password)
@@ -58,7 +43,7 @@ class LoginView(APIView):
             jwt_token = user.get_token()
             return Response(jwt_token)
         else:
-            return Response({"error":"please check authentication credentils"})
+            return Response({"error": "please check authentication credentils"})
 
 
 class RegisterView(APIView):
@@ -72,11 +57,45 @@ class RegisterView(APIView):
                         }
         content-type: Application/json
     """
+
     def post(self, request):
+        import random
+
+        phone = request.data.get("phone_no")
         password = request.data.get("password")
+        country_code = request.data.get("country_code")
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            # send otp
+            otp = "".join([str(random.randrange(9)) for _ in range(4)])
+            send_sms(country_code, phone, otp)
+
+            # new user
             user = serializer.save()
             user.set_password(password)
+            user.otp = otp
             user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                {"messsge": "otp send to your mobile number"},
+                status=status.HTTP_201_CREATED,
+            )
+
+
+class VerifyOTPEndpoint(APIView):
+    """ Verify OTP """
+
+    def post(self, request):
+        """ post request of otp verification"""
+        phone = request.data.get("phone_no")
+        otp = request.data.get("otp")
+
+        try:
+            user = User.objects.get(phone_no=phone)
+        except User.DoesNotExist:
+            return Response({"error": "please check authentication credentils"})
+
+        # check otp is valid or not
+        if user and user.otp == otp:
+            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST)

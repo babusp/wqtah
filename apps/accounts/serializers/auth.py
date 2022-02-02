@@ -2,19 +2,14 @@
 auth serializer file
 """
 # django imports
-from datetime import datetime, timedelta
-
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import serializers
 
 # local imports
-from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
+from apps.accounts.messages import ERROR_CODE
 
-from apps.accounts.models.auth import (User, UserPhoneVerification)
-from apps.accounts.managers import UserManager
-
-from apps.accounts.tasks.auth import send_sms_otp_task
+from apps.accounts.models.auth import User
 
 USER = get_user_model()
 
@@ -78,36 +73,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = USER
-        fields = ('first_name', 'last_name',"email", 'country_code', 'phone_no', 'password')
+        fields = ('first_name', 'last_name', "email", 'country_code', 'phone_no', 'password')
 
 
 
-
-class SendPhoneOTPSerializer(serializers.ModelSerializer):
-    """
-    Send phone OTP serializers
-    """
-    class Meta(object):
-        """ Meta information """
-        model = UserPhoneVerification
-        fields = ('id', 'country_code', 'phone_no')
-
-    def validate(self, attrs):
-        attrs.update({'user': self.context['user']})
-        return attrs
-
-    def create(self, validated_data):
-        user = self.context['user']
-        validated_data['otp'] = UserPhoneVerification.generate_otp()
-        validated_data['expired_at'] = datetime.now() + timedelta(minutes=500)
-
-        # Deactivate all previous otp generated for the new phone
-        user.phone_verification_set.update(is_active=False)
-        instance = super(SendPhoneOTPSerializer, self).create(validated_data)
-        return instance
-
-    def save(self, send_otp=True, **kwargs):
-        instance = super(SendPhoneOTPSerializer, self).save(**kwargs)
-        if send_otp:
-            send_sms_otp_task(instance)
-        return instance

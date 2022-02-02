@@ -7,22 +7,15 @@ from django.urls import path, include
 from apps.accounts import views
 
 
-
-
 # local imports
 
-from apps.accounts.views.auth import LoginView, RegisterView
+from apps.accounts.views.auth import LoginView, RegisterView, VerifyOTPEndpoint
 
 
 urlpatterns = [
     path("signup/", RegisterView.as_view(), name="signup"),
-    path('login/', LoginView.as_view(), name='login'),
-
+    path("login/", LoginView.as_view(), name="login"),
+    path("verify/otp/", VerifyOTPEndpoint.as_view(), name="otp-verification"),
     # path('reset-password', ResetPasswordView.as_view(), name='reset-password'),
-
     # path('verify-email/<int:id>/<str:token>', EmailVerificationView.as_view(), name='verify_email'),
-
-
-
-
 ]

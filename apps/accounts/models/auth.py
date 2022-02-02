@@ -2,21 +2,16 @@
 models file
 """
 # python imports
-import random
-import string
-from datetime import datetime
 
 
 # django imports
-from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # local imports
-from apps.accounts.choices import GENDER
+from apps.accounts.constants import Admin, BusinessOwner, EndUser, StaffUser
 from apps.accounts.managers import UserManager
 
 
@@ -24,11 +19,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     User Model Class
     """
-    # user_name = models.CharField(max_length=50, unique=True)
-    Admin = 1
-    BusinessOwner = 2
-    EndUser = 3
-    StaffUser = 4
     ROLES = (
         (Admin, 'Admin'),
         (BusinessOwner, 'BusinessOwner'),
@@ -37,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    email = models.EmailField(max_length=100, blank=True,unique=True)
+    email = models.EmailField(max_length=100, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
     role = models.IntegerField(default=3, choices=ROLES)
@@ -50,6 +40,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     forgot_pass_token = models.CharField(max_length=20, blank=True, null=True)
     forgot_pass_token_created_at = models.DateTimeField(null=True, blank=True)
 
+    # otp related fields
+    otp = models.CharField(max_length=10,null=True)
+    otp_verified = models.BooleanField(default=False)
+
     objects = UserManager()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -60,15 +54,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     # createsuperuser management command.
     REQUIRED_FIELDS = ["email","first_name"]
 
-
     def save(self, *args, **kwargs):
         if not self.id and not self.email:
             self.email = self.email
-            
         super(User, self).save(*args, **kwargs)
         
     def __str__(self):
-        return self.email
+        return self.phone_no
 
     @property
     def full_name(self):
@@ -86,31 +78,3 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
-
-class UserPhoneVerification(models.Model):
-    """
-    This class is used to verify user and their contact no.
-    """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='phone_verification_set')
-    country_code = models.IntegerField()
-    phone_no = models.CharField(max_length=17)
-    otp = models.CharField(max_length=10)
-    is_verified = models.BooleanField(default=False)
-
-    # OTP validity
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    expired_at = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta(object):
-        """ Meta information """
-        db_table = 'user_phone_verification'
-
-    def __str__(self):
-        return self.phone
-
-    @staticmethod
-    def generate_otp():
-        return ''.join([str(random.randrange(9)) for _ in range(4)])
