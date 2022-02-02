@@ -11,6 +11,7 @@ from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # local imports
+from apps.accounts.constants import Admin, BusinessOwner, EndUser, StaffUser
 from apps.accounts.managers import UserManager
 
 
@@ -18,11 +19,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     User Model Class
     """
-    # user_name = models.CharField(max_length=50, unique=True)
-    Admin = 1
-    BusinessOwner = 2
-    EndUser = 3
-    StaffUser = 4
     ROLES = (
         (Admin, 'Admin'),
         (BusinessOwner, 'BusinessOwner'),
