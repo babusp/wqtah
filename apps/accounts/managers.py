@@ -4,13 +4,6 @@ managers file
 from django.contrib.auth.base_user import BaseUserManager
 
 
-# from apps.accounts.models.auth import User
-# from .models import User
-
-# from apps.accounts.models import User
-from django.db.models import Q
-
-
 class UserManager(BaseUserManager):
     """
     User Manager Class
@@ -52,4 +45,3 @@ class UserManager(BaseUserManager):
 
     def get_by_natural_key(self, username):
         return self.get(phone_no__iexact=username)
-
