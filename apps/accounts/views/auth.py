@@ -32,7 +32,6 @@ class LoginView(APIView):
     def post(self, request):
         phone = request.data.get("phone_no")
         password = request.data.get("password")
-
         try:
             user = User.objects.get(phone_no=phone)
         except User.DoesNotExist:
@@ -58,6 +57,8 @@ class RegisterView(APIView):
                         }
         content-type: Application/json
     """
+
+    serializer_class = RegisterSerializer
 
     def post(self, request):
         import random
@@ -94,8 +95,8 @@ class VerifyOTPEndpoint(APIView):
 
         # check otp is valid or not
         if user and user.otp == otp:
-            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
+            return Response({"message": "otp verified"}, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "otp not verified"}, status=status.HTTP_400_BAD_REQUEST
             )
