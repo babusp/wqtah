@@ -7,11 +7,9 @@ from django.contrib.auth import get_user_model, logout
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # local imports
-from apps.accounts.forms.reset_password import ResetPasswordForm
 from apps.accounts.models import User
 from apps.accounts.serializers.auth import RegisterSerializer
 from apps.services.sms_services import send_sms

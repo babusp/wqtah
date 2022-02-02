@@ -58,11 +58,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     # createsuperuser management command.
     REQUIRED_FIELDS = ["email","first_name"]
 
-
     def save(self, *args, **kwargs):
         if not self.id and not self.email:
             self.email = self.email
-            
         super(User, self).save(*args, **kwargs)
         
     def __str__(self):
@@ -84,4 +82,3 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-

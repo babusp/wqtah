@@ -5,7 +5,6 @@ tests file
 # Create your tests here.
 
 from rest_framework.test import APITestCase
-from django.urls import reverse
 from apps.accounts.models.auth import User
 
 
@@ -48,6 +47,3 @@ class TestView(TestSetUp):
         user.save()
         res = self.client.post(self.login_url, self.user_data, format="json")
         self.assertEqual(res.status_code, 200)
-
-
-
