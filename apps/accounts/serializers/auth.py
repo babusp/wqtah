@@ -15,74 +15,30 @@ from apps.services.twilio_services import send_twilio_otp, verify_twilio_otp
 USER = get_user_model()
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
     """used to verify the login credentials and return the login response"""
 
     email_or_phoneNo = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=100)
+    token = serializers.JSONField(read_only=True)
 
-    class Meta:
-        """meta class"""
+    def validate(self, data):
+        phone = data.get("email_or_phoneNo")
+        password = data.get("password")
+        user = User.objects.get(phone_no=phone)
 
-        model = User
-        fields = ("email_or_phoneNo", "password")
-
-    def validate_username(self, email_or_phoneNo):
-        user = User.objects.filter(
-            (
-                Q(email__iexact=email_or_phoneNo, is_active=False).first()
-                | Q(phone_no__iexact=email_or_phoneNo, is_active=False).first()
-            )
-        )
-
-        if user:
-            user = user[0]
-            serializer = SendPhoneOTPSerializer(
-                data={
-                    "email": user.email_or_phoneNo,
-                    "phone_no": user.email_or_phoneNo,
-                },
-                context={"user": user, "request": self.context["request"]},
-            )
-            if serializer.is_valid():
-                serializer.save()
-            raise serializers.ValidationError({"detail": ERROR_CODE["4008"]})
-        return user
-
-    def validate(self, attrs):
-        """used to validate the email/phoneNo and password"""
-
-        user = (
-            User.objects.filter(email__iexact=attrs["email_or_phoneNo"]).first()
-            or User.objects.filter(phone_no__iexact=attrs["email_or_phoneNo"]).first()
-        )
-
-        if not user:
-            raise serializers.ValidationError({"detail": ERROR_CODE["4001"]})
-        if not user.is_active:
-            raise serializers.ValidationError({"detail": ERROR_CODE["4003"]})
-        if not user.is_verified:
-            raise serializers.ValidationError({"detail": ERROR_CODE["4005"]})
-        if not user.check_password(attrs["password"]):
-            raise serializers.ValidationError({"detail": ERROR_CODE["4002"]})
-        self.context.update({"user": user})
-        return attrs
-
-    def create(self, validated_data):
-        """used to return the user object"""
-        return self.context["user"]
-
-    def to_representation(self, instance):
-        """used to return the user json"""
-
-        return {
-            "token": instance.get_token(),
-            "id": instance.id,
-            "first_name": instance.first_name,
-            "last_name": instance.last_name,
-            "phone_no": instance.phone_no,
-            "email": instance.email,
-            "role": instance.role,
-        }
+        if phone and password:
+            verified = user.check_password(password)
+            if verified:
+                jwt_tokens = user.get_token()
+                data["token"] = jwt_tokens
+                return data
+            else:
+                raise serializers.ValidationError(
+                    "please check authentication credentils"
+                )
+        else:
+            raise serializers.ValidationError("please check authentication credentils")
 
 
 class UserBasicInfoSerializer(serializers.ModelSerializer):
@@ -173,7 +129,10 @@ class SendOtpSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """overriding create serializer"""
-        send_twilio_otp(
-            validated_data["country_code"], validated_data["phone_no"], "sms"
-        )
+        try:
+            send_twilio_otp(
+                validated_data["country_code"], validated_data["phone_no"], "sms"
+            )
+        except Exception as e:
+            raise serializers.ValidationError(ERROR_CODE["4010"])
         return validated_data
