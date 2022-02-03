@@ -8,7 +8,7 @@ from django.conf import settings
 from apps.services.twilio_services import TwilioService
 
 
-def send_sms(to_phone, message):
+def send_sms(country_code, to_phone, message):
     """
     This code is used for sending sms via twilio.
     """
@@ -17,7 +17,7 @@ def send_sms(to_phone, message):
         response = client.messages.create(
                               body=message,
                               from_=settings.TWILIO_FROM_CONTACT,
-                              to=to_phone
+                              to='+{}{}'.format(country_code, to_phone)
                           )
         print(response)
 

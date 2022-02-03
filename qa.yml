@@ -2,24 +2,24 @@ version: '2'
 services:
   nginx:
     image: nginx:latest
-    container_name: dev-nginx
+    container_name: qa-nginx
     restart: always
     ports:
-      - "80:80"
+      - "8002:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - .:/usr/src/app
-      - ./devlogdna:/var/log/nginx
+      - ./qalogdna:/var/log/nginx
     depends_on:
       - web
     networks:
-      - dev-network
+      - qa-network
       
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: dev-django
+    container_name: qa-django
     restart: always
     command: bash -c "pip3 install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && gunicorn wqtah.wsgi -b 0.0.0.0:80"
     volumes:
@@ -27,19 +27,19 @@ services:
     expose:
       - "80"
     networks:
-      - dev-network
+      - qa-network
 
   broker:
     image: rabbitmq:latest
-    container_name: dev_rabbitmq
+    container_name: qa_rabbitmq
     restart: always
     networks:
-      - dev-network
+      - qa-network
 
   worker:
     build: .
     image: celery
-    container_name: dev_celery
+    container_name: qa_celery
     restart: always
     command: bash -c "celery -A wqtah worker -l INFO --concurrency=10"
     volumes:
@@ -47,12 +47,12 @@ services:
     depends_on:
       - broker
     networks:
-      - dev-network
+      - qa-network
 
   celery-beat:
     build: .
     image: celery
-    container_name: dev_celery_beat
+    container_name: qa_celery_beat
     restart: always
     command: bash -c "celery -A wqtah beat -l INFO"
     volumes:
@@ -60,8 +60,8 @@ services:
     depends_on:
       - worker
     networks:
-      - dev-network
+      - qa-network
 
 networks:
-  dev-network:
+  qa-network:
     driver: bridge

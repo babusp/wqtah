@@ -36,7 +36,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.getenv('HOST_NAME'), "*"]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 DJANGO_APPS = [
@@ -170,6 +170,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'apps.utility.custom_exception.custom_exception_handler',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.CoreJSONRenderer',
@@ -207,13 +208,10 @@ SWAGGER_SETTINGS = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # SMS Configuration for TWILIO account
-# TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
-# TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
-# TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
 
 TWILIO_ACCOUNT_SID = "AC3cf5aba6cbb981eb723ebd6dc1f10741"
 TWILIO_AUTH_TOKEN = "88d019fea19082be9dd46e958630c164"
-# TWILIO_FROM_CONTACT = +15622225914
+TWILIO_SERVICE_SID = "VA95ebe44d200d769f835b69090592769c"
 TWILIO_FROM_CONTACT = +16205688328
 
 
@@ -239,4 +237,40 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:4200',
+#     'https://wqtah-dev-frontend.kiwi-internal.com'
+# ]
 
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:4200',
+    'https://wqtah-dev-frontend.kiwi-internal.com'
+]
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+CORS_ALLOW_CREDENTIALS = True
+
+
+# define SECURE PROXY SSL HEADER
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
