@@ -32,4 +32,3 @@ class Attachments(BaseModel):
     class Meta:
         """Base Meta class"""
         abstract = True
-
