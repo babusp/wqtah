@@ -50,6 +50,11 @@ class RegistrationViewSet(CustomModelPostViewSet):
 
     serializer_class = RegisterSerializer
 
+    def create(self, request, *args, **kwargs):
+        """ overriding for custom response """
+        serializer = super(RegistrationViewSet, self).create(request, *args, **kwargs)
+        return CustomResponse(status=status.HTTP_200_OK, detail=SUCCESS_CODE['2001']).success_response(data=serializer.data)
+
 
 class VerifyOTPEndpoint(APIView):
     """Verify OTP"""
