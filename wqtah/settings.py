@@ -237,10 +237,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
-CORS_ORIGIN_WHITELIST = [
-    'https://wqtah-dev-frontend.kiwi-internal.com',
-    'https://wqtah-qa-frontend.kiwi-internal.com'
-]
+
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -266,6 +263,3 @@ CORS_ALLOW_HEADERS = (
 )
 CORS_ALLOW_CREDENTIALS = True
 
-
-# define SECURE PROXY SSL HEADER
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
