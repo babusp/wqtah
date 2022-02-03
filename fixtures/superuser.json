@@ -1,0 +1,27 @@
+[{
+	"model": "accounts.user",
+	"pk": 1,
+	"fields": {
+		"password": "pbkdf2_sha256$320000$EyvPipQCavZcD5SLbCaZ12$4YmR2mTy+aim71JOFuPBGdIsFFZ+pw8E/S25zGUSy+M=",
+		"last_login": "2022-02-02T14:26:21.667Z",
+		"is_superuser": true,
+		"first_name": "Admin",
+		"last_name": null,
+		"email": "",
+		"country_code": 91,
+		"phone_no": "9876543211",
+		"role": 3,
+		"is_staff": true,
+		"is_active": true,
+		"is_verified": true,
+		"verification_token": null,
+		"verification_token_created_at": null,
+		"forgot_pass_token": null,
+		"forgot_pass_token_created_at": null,
+		"otp": null,
+		"otp_verified": false,
+		"created_at": "2022-02-02T14:25:47.067Z",
+		"groups": [],
+		"user_permissions": []
+	}
+}]
