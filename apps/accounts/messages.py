@@ -22,6 +22,7 @@ ERROR_CODE = {
     '4007': "Link Expired.",
     '4008': "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
     '4009': "Invalid OTP.",
+    '4010': "Invalid Phone no.",
 }
 
 SMS_TEMPLATE = {

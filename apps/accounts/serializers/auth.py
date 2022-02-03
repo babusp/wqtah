@@ -123,7 +123,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             return instance
 
 
-
 class SendOtpSerializer(serializers.Serializer):
     """ used to send otp to user phone no"""
     country_code = serializers.CharField(required=True)
@@ -134,5 +133,8 @@ class SendOtpSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """overriding create serializer"""
-        send_twilio_otp(validated_data["country_code"], validated_data['phone_no'], 'sms')
+        try:
+            send_twilio_otp(validated_data["country_code"], validated_data['phone_no'], 'sms')
+        except Exception as e:
+            raise serializers.ValidationError(ERROR_CODE['4010'])
         return validated_data
