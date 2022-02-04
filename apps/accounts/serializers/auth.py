@@ -25,19 +25,24 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         phone = data.get("email_or_phoneNo")
         password = data.get("password")
-        user = User.objects.get(phone_no=phone)
-
-        if phone and password:
-            verified = user.check_password(password)
-            if verified:
-                data["data"] = UserWithTokenSerializer(user).data
-                return data
+        try:
+            user = User.objects.get(phone_no=phone)
+            if phone and password:
+                verified = user.check_password(password)
+                if verified:
+                    data["data"] = UserWithTokenSerializer(user).data
+                    return data
+                else:
+                    raise serializers.ValidationError(
+                        "please check authentication credentils"
+                    )
             else:
                 raise serializers.ValidationError(
                     "please check authentication credentils"
                 )
-        else:
-            raise serializers.ValidationError("please check authentication credentils")
+
+        except User.DoesNotExist:
+            raise serializers.ValidationError(" User details doesnot exist ")
 
 
 class UserBasicInfoSerializer(serializers.ModelSerializer):

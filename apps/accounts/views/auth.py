@@ -76,10 +76,10 @@ class VerifyOTPEndpoint(APIView):
 
         # check otp is valid or not
         if user and user.otp == otp:
-            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
+            return Response({"message": "otp verified"}, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "otp not verified"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
