@@ -31,5 +31,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(("apps.accounts.urls.urls", "account"), namespace="account")),
     path("api-doc/", schema_view.with_ui("swagger", cache_timeout=0)),
-    path("utility/", include(("apps.utility.urls", "utils"), namespace="utils")),
+    path("utility/", include(("apps.utility.urls", "utility"), namespace="utility")),
 ]
