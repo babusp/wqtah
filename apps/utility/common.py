@@ -11,6 +11,7 @@ class CustomResponse:
     """
     To create class for success and error response
     """
+
     def __init__(self, status: int, detail=None):
         """
         To set status & detail
@@ -48,14 +49,16 @@ class CustomResponse:
         :return: Json response
         """
         if data:
-            data['server_date_time'] = datetime.now()
+            data["server_date_time"] = datetime.now()
         return Response(data, status=self.status, **kwargs)
 
     def error_message(self, error, **kwargs):
         """
         To for show error
         """
-        return Response({"detail": self.detail, 'error': error}, status=self.status, **kwargs)
+        return Response(
+            {"detail": self.detail, "error": error}, status=self.status, **kwargs
+        )
 
     def error_response(self, **kwargs):
         """
@@ -68,7 +71,9 @@ class CustomResponse:
             error = None
         else:
             detail = self._get_validate_error_string(error)
-        return Response({"detail": detail, 'error': error}, status=self.status, **kwargs)
+        return Response(
+            {"detail": detail, "error": error}, status=self.status, **kwargs
+        )
 
 
 def get_random_number(string_length):
@@ -76,4 +81,4 @@ def get_random_number(string_length):
     :param string_length: int type
     :return: random string of given length
     """
-    return int(''.join(secrets.choice(string.digits) for _ in range(string_length)))
+    return int("".join(secrets.choice(string.digits) for _ in range(string_length)))

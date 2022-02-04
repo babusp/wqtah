@@ -4,11 +4,17 @@ urls file
 # third party imports
 from rest_framework import routers
 from django.urls import path
-from apps.accounts.views.auth import LoginView, VerifyOTPEndpoint, SendOTPViewSet, RegistrationViewSet
+from apps.accounts.views.auth import (
+    LoginView,
+    VerifyOTPEndpoint,
+    SendOTPViewSet,
+    RegistrationViewSet,
+)
+
 router = routers.DefaultRouter()
 # register router for send otp in user
-router.register(r'send-otp', SendOTPViewSet, basename='send_otp')
-router.register(r'signup', RegistrationViewSet, basename='signup')
+router.register(r"send-otp", SendOTPViewSet, basename="send_otp")
+router.register(r"signup", RegistrationViewSet, basename="signup")
 
 # local imports
 
