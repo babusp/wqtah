@@ -5,7 +5,7 @@ utils Urls
 from rest_framework import routers
 
 # local import
-from apps.utility.views import LoadFixturesViewSet
+from apps.utility.views.utility_views import LoadFixturesViewSet
 
 
 router = routers.SimpleRouter()

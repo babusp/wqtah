@@ -19,7 +19,7 @@ class FixtureFilter(filters.FilterSet):
     type = filters.CharFilter()
 
     class Meta:
-        """CountryIp meta class"""
+        """fixture type metaclass"""
         fields = ('type', )
 
 
