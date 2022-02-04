@@ -11,7 +11,7 @@ from rest_framework.generics import RetrieveAPIView
 
 
 # local imports
-from apps.accounts.messages import SUCCESS_CODE
+from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
 from apps.accounts.models import User
 from apps.accounts.serializers.auth import (
     RegisterSerializer,
@@ -40,9 +40,12 @@ class LoginView(RetrieveAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            jwt_tokens = serializer.data["token"]
-            return Response(jwt_tokens, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return CustomResponse(
+                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+            ).success_response(data=serializer.data["data"])
+        return CustomResponse(
+            status=status.HTTP_400_BAD_REQUEST, detail=ERROR_CODE["4002"]
+        ).error_message(error=serializer.errors)
 
 
 class RegistrationViewSet(CustomModelPostViewSet):
@@ -51,9 +54,11 @@ class RegistrationViewSet(CustomModelPostViewSet):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        """ overriding for custom response """
+        """overriding for custom response"""
         serializer = super(RegistrationViewSet, self).create(request, *args, **kwargs)
-        return CustomResponse(status=status.HTTP_200_OK, detail=SUCCESS_CODE['2001']).success_response(data=serializer.data)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
 
 
 class VerifyOTPEndpoint(APIView):

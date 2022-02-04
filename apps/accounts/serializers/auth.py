@@ -20,7 +20,7 @@ class LoginSerializer(serializers.Serializer):
 
     email_or_phoneNo = serializers.CharField(max_length=100)
     password = serializers.CharField(max_length=100)
-    token = serializers.JSONField(read_only=True)
+    data = serializers.JSONField(read_only=True)
 
     def validate(self, data):
         phone = data.get("email_or_phoneNo")
@@ -30,8 +30,7 @@ class LoginSerializer(serializers.Serializer):
         if phone and password:
             verified = user.check_password(password)
             if verified:
-                jwt_tokens = user.get_token()
-                data["token"] = jwt_tokens
+                data["data"] = UserWithTokenSerializer(user).data
                 return data
             else:
                 raise serializers.ValidationError(
