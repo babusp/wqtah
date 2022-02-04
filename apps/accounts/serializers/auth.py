@@ -44,6 +44,16 @@ class LoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError(" User details doesnot exist ")
 
+    def create(self, validated_data):
+        """overriding create"""
+        phone = (validated_data["phone_no"],)
+        try:
+            user = User.objects.get(phone_no=phone)
+        except Exception:
+            raise serializers.ValidationError("please check authentication credentils")
+
+        return user
+
 
 class UserBasicInfoSerializer(serializers.ModelSerializer):
     """Base class for user profile"""

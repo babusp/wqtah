@@ -27,7 +27,7 @@ USER = get_user_model()
 # Create your views here.
 
 
-class LoginView(RetrieveAPIView):
+class LoginViewSet(CustomModelPostViewSet):
     """
     used to login the user and return the token info
         POST  /login/
@@ -37,7 +37,7 @@ class LoginView(RetrieveAPIView):
 
     serializer_class = LoginSerializer
 
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             return CustomResponse(
