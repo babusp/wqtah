@@ -57,9 +57,10 @@ class RegistrationViewSet(CustomModelPostViewSet):
         """ overriding for custom response """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
         return CustomResponse(
                 status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
-            ).success_response(data=serializer.data["data"])
+            ).success_response(data=serializer.data)
 
 
 class VerifyOTPEndpoint(APIView):
