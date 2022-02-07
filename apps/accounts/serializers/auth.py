@@ -47,8 +47,7 @@ class LoginSerializer(serializers.Serializer):
         try:
             user = User.objects.get(phone_no=phone)
         except Exception:
-            raise serializers.ValidationError("please check authentication credentils")
-
+            raise serializers.ValidationError(ERROR_CODE["4001"])
         return user
 
 
