@@ -3,7 +3,7 @@ auth serializer file
 """
 # django imports
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+
 from rest_framework import serializers
 
 # local imports
@@ -25,19 +25,25 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         phone = data.get("email_or_phoneNo")
         password = data.get("password")
-        user = User.objects.get(phone_no=phone)
+        try:
+            user = User.objects.get(phone_no=phone)
+            if phone and password:
+                verified = user.check_password(password)
+                if verified:
+                    data["data"] = UserWithTokenSerializer(user).data
+                    return data
+            raise serializers.ValidationError(ERROR_CODE["4003"])
+        except User.DoesNotExist:
+            raise serializers.ValidationError(ERROR_CODE["4001"])
 
-        if phone and password:
-            verified = user.check_password(password)
-            if verified:
-                data["data"] = UserWithTokenSerializer(user).data
-                return data
-            else:
-                raise serializers.ValidationError(
-                    "please check authentication credentils"
-                )
-        else:
-            raise serializers.ValidationError("please check authentication credentils")
+    def create(self, validated_data):
+        """overriding create"""
+        phone = (validated_data["phone_no"],)
+        try:
+            user = User.objects.get(phone_no=phone)
+        except Exception:
+            raise serializers.ValidationError(ERROR_CODE["4001"])
+        return user
 
 
 class UserBasicInfoSerializer(serializers.ModelSerializer):
