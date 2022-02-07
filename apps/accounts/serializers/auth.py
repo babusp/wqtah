@@ -32,12 +32,7 @@ class LoginSerializer(serializers.Serializer):
                 if verified:
                     data["data"] = UserWithTokenSerializer(user).data
                     return data
-                else:
-                    raise serializers.ValidationError(ERROR_CODE["4003"])
-
-            else:
-                raise serializers.ValidationError(ERROR_CODE["4001"])
-
+            raise serializers.ValidationError(ERROR_CODE["4003"])
         except User.DoesNotExist:
             raise serializers.ValidationError(ERROR_CODE["4001"])
 
