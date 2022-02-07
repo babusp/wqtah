@@ -61,6 +61,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'apps.utility',
     'apps.accounts',
+    'apps.business',
 ]
 
 # Add all apps
