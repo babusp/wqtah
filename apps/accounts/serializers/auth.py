@@ -3,7 +3,7 @@ auth serializer file
 """
 # django imports
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+
 from rest_framework import serializers
 
 # local imports
@@ -33,16 +33,13 @@ class LoginSerializer(serializers.Serializer):
                     data["data"] = UserWithTokenSerializer(user).data
                     return data
                 else:
-                    raise serializers.ValidationError(
-                        "please check authentication credentils"
-                    )
+                    raise serializers.ValidationError(ERROR_CODE["4003"])
+
             else:
-                raise serializers.ValidationError(
-                    "please check authentication credentils"
-                )
+                raise serializers.ValidationError(ERROR_CODE["4001"])
 
         except User.DoesNotExist:
-            raise serializers.ValidationError(" User details doesnot exist ")
+            raise serializers.ValidationError(ERROR_CODE["4001"])
 
     def create(self, validated_data):
         """overriding create"""
