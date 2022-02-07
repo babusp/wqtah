@@ -40,7 +40,7 @@ class CreateModelMixin:
     @staticmethod
     def get_success_headers(data):
         try:
-            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+            return {"Location": str(data[api_settings.URL_FIELD_NAME])}
         except (TypeError, KeyError):
             return {}
 
@@ -57,7 +57,9 @@ class ListModelMixin:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
-        return CustomResponse(status=status.HTTP_200_OK, detail=None).success_response(data=serializer.data)
+        return CustomResponse(status=status.HTTP_200_OK, detail=None).success_response(
+            data=serializer.data
+        )
 
 
 class RetrieveModelMixin:
@@ -68,7 +70,9 @@ class RetrieveModelMixin:
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return CustomResponse(status=status.HTTP_200_OK, detail=None).success_response(data=serializer.data)
+        return CustomResponse(status=status.HTTP_200_OK, detail=None).success_response(
+            data=serializer.data
+        )
 
 
 class UpdateModelMixin:
@@ -77,14 +81,16 @@ class UpdateModelMixin:
     """
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         if serializer.is_valid(raise_exception=False):
             self.perform_update(serializer)
-            if getattr(instance, '_prefetched_objects_cache', None):
+            if getattr(instance, "_prefetched_objects_cache", None):
                 instance._prefetched_objects_cache = {}
-            return CustomResponse(status=status.HTTP_200_OK, detail=None).success_response(data=serializer.data)
+            return CustomResponse(
+                status=status.HTTP_200_OK, detail=None
+            ).success_response(data=serializer.data)
         return CustomResponse(
             status=status.HTTP_400_BAD_REQUEST, detail=serializer.errors
         ).error_response()
@@ -94,7 +100,7 @@ class UpdateModelMixin:
         serializer.save()
 
     def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
+        kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
 
 
@@ -111,25 +117,27 @@ class DestroyModelMixin:
         ).success_response(data=None)
 
 
-class CustomModelViewSet(CreateModelMixin,
-                         RetrieveModelMixin,
-                         UpdateModelMixin,
-                         DestroyModelMixin,
-                         ListModelMixin,
-                         GenericViewSet):
+class CustomModelViewSet(
+    CreateModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    GenericViewSet,
+):
     """
     A view-set that provides default `create()`, `retrieve()`, `update()`,
     `partial_update()`, `destroy()` and `list()` actions, and provide a unique response format .
     """
+
     pass
 
 
-class CustomModelPostListViewSet(CreateModelMixin,
-                                 ListModelMixin,
-                                 GenericViewSet):
+class CustomModelPostListViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     """
     A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
     """
+
     pass
 
 
@@ -137,6 +145,7 @@ class CustomModelListViewSet(ListModelMixin, GenericViewSet):
     """
     A view-set that provides default `list()` actions, and provide a unique response format .
     """
+
     pass
 
 
@@ -144,6 +153,7 @@ class CustomModelRetrieveViewSet(RetrieveModelMixin, GenericViewSet):
     """
     A view-set that provides default `list()` actions, and provide a unique response format .
     """
+
     pass
 
 
@@ -151,4 +161,5 @@ class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
     """
     A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
     """
+
     pass
