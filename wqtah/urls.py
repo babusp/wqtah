@@ -22,14 +22,14 @@ from drf_yasg.views import get_schema_view
 schema_view = get_schema_view(
     openapi.Info(
         title="My API's",
-        default_version='v1',
+        default_version="v1",
     ),
     public=True,
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(('apps.accounts.urls.urls', 'account'), namespace='account')),
-    path('api-doc/', schema_view.with_ui('swagger', cache_timeout=0)),
-
+    path("admin/", admin.site.urls),
+    path("", include(("apps.accounts.urls.urls", "account"), namespace="account")),
+    path("api-doc/", schema_view.with_ui("swagger", cache_timeout=0)),
+    path("utility/", include(("apps.utility.urls", "utility"), namespace="utility")),
 ]

@@ -2,33 +2,23 @@
 auth views
 """
 # django imports
-import email
-from urllib import request
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth import get_user_model, logout
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views import View
-from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import (viewsets, status, mixins)
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework.views import APIView
 
 
 # local imports
-
-from apps.accounts.forms.reset_password import ResetPasswordForm
-from apps.accounts.models.auth import User
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.serializers.auth import (LoginSerializer, RegisterSerializer
-                                            )
-from rest_framework_simplejwt.tokens import RefreshToken
-
+from apps.accounts.models import User
+from apps.accounts.serializers.auth import (
+    RegisterSerializer,
+    SendOtpSerializer,
+    LoginSerializer,
+)
+from apps.utility.viewsets import CustomModelPostViewSet
+from apps.utility.common import CustomResponse
 
 USER = get_user_model()
 
@@ -36,47 +26,74 @@ USER = get_user_model()
 # Create your views here.
 
 
-class LoginView(APIView):
+class LoginViewSet(CustomModelPostViewSet):
     """
     used to login the user and return the token info
         POST  /login/
         request body: {"email": "example@email.com", "password": "my-password"}
         content-type: Application/json
     """
+
+    serializer_class = LoginSerializer
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            return CustomResponse(
+                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+            ).success_response(data=serializer.data["data"])
+        return CustomResponse(
+            status=status.HTTP_400_BAD_REQUEST, detail=ERROR_CODE["4002"]
+        ).error_message(error=serializer.errors)
+
+
+class RegistrationViewSet(CustomModelPostViewSet):
+    """View set class to register user"""
+
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        """ overriding for custom response """
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+            ).success_response(data=serializer.data)
+
+
+class VerifyOTPEndpoint(APIView):
+    """Verify OTP"""
+
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        """post request of otp verification"""
+        phone = request.data.get("phone_no")
+        otp = request.data.get("otp")
+
         try:
-            user = User.objects.get(email=email)
-            print(user)
+            user = User.objects.get(phone_no=phone)
         except User.DoesNotExist:
-            return Response({"error":"please check authentication credentils"})
+            return Response({"error": "please check authentication credentils"})
 
-        # check user is authenticater or not
-        verified = user.check_password(password)
-        if verified:
-            jwt_token = user.get_token()
-            return Response(jwt_token)
+        # check otp is valid or not
+        if user and user.otp == otp:
+            return Response(status=status.HTTP_200_OK)
         else:
-            return Response({"error":"please check authentication credentils"})
+            return CustomResponse(
+                status=status.HTTP_400_BAD_REQUEST, detail=ERROR_CODE["4009"]
+            ).error_message(error=serializer.errors)
+
+            # {"message": "otp not verified"}, status=status.HTTP_400_BAD_REQUEST
 
 
-class RegisterView(APIView):
-    """
-    used to register the user and return the token info
-    POST  /signup/
-        request body: {
-                          "first_name": "string",
-                          "email": "user@example.com",
-                          "password": "string"
-                        }
-        content-type: Application/json
-    """
-    def post(self, request):
-        password = request.data.get("password")
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            user.set_password(password)
-            user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+class SendOTPViewSet(CustomModelPostViewSet):
+    """View set class to change password"""
+
+    serializer_class = SendOtpSerializer
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        super(SendOTPViewSet, self).create(request, *args, **kwargs)
+        return CustomResponse(
+            status=200, detail=SUCCESS_CODE["2005"]
+        ).success_response()

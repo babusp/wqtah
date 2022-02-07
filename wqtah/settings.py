@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'django_filters',
     'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
+    
 
 ]
 
@@ -170,6 +170,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'apps.utility.custom_exception.custom_exception_handler',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.CoreJSONRenderer',
@@ -207,32 +208,36 @@ SWAGGER_SETTINGS = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # SMS Configuration for TWILIO account
-# TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
-# TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
-# TWILIO_FROM_CONTACT = config('TWILIO_FROM_CONTACT')
 
 TWILIO_ACCOUNT_SID = "AC3cf5aba6cbb981eb723ebd6dc1f10741"
 TWILIO_AUTH_TOKEN = "88d019fea19082be9dd46e958630c164"
-# TWILIO_FROM_CONTACT = +15622225914
+TWILIO_SERVICE_SID = "VA95ebe44d200d769f835b69090592769c"
 TWILIO_FROM_CONTACT = +16205688328
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': False,
-    'AUTH_HEADER_TYPES': "Bearer",
-    'ALGORITHM': 'HS512',
-    'SIGNING_KEY': SECRET_KEY,
-    'AUDIENCE': None,
-    'ISSUER': "your_site_url",
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:4200',
-#     'https://wqtah-dev-frontend.kiwi-internal.com'
-# ]
+
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -244,11 +249,6 @@ CORS_ALLOW_METHODS = (
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:4200',
-    'https://wqtah-dev-frontend.kiwi-internal.com'
-]
 
 CORS_ALLOW_HEADERS = (
     'accept',
@@ -265,4 +265,4 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 # define SECURE PROXY SSL HEADER
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
