@@ -2,6 +2,7 @@
 models file
 """
 # python imports
+from msilib.schema import Class
 import random
 import string
 from datetime import datetime
@@ -24,20 +25,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     User Model Class
     """
+
     # user_name = models.CharField(max_length=50, unique=True)
     Admin = 1
     BusinessOwner = 2
     EndUser = 3
     StaffUser = 4
     ROLES = (
-        (Admin, 'Admin'),
-        (BusinessOwner, 'BusinessOwner'),
-        (EndUser, 'EndUser'),
-        (StaffUser, 'StaffUser')
+        (Admin, "Admin"),
+        (BusinessOwner, "BusinessOwner"),
+        (EndUser, "EndUser"),
+        (StaffUser, "StaffUser"),
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    email = models.EmailField(max_length=100, blank=True,unique=True)
+    email = models.EmailField(max_length=100, blank=True, unique=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_no = models.CharField(unique=True, max_length=17, null=True, blank=True)
     role = models.IntegerField(default=3, choices=ROLES)
@@ -54,19 +56,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
 
     # here username_field is django defined field in account model, used for account identification.
-    USERNAME_FIELD = 'phone_no'
+    USERNAME_FIELD = "phone_no"
 
     # list of the field names that will be prompted for when creating a account via the
     # createsuperuser management command.
-    REQUIRED_FIELDS = ["email","first_name"]
-
+    REQUIRED_FIELDS = ["email", "first_name"]
 
     def save(self, *args, **kwargs):
         if not self.id and not self.email:
             self.email = self.email
-            
+
         super(User, self).save(*args, **kwargs)
-        
+
     def __str__(self):
         return self.email
 
@@ -83,8 +84,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         refresh = RefreshToken.for_user(self)
         return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
         }
 
 
@@ -92,7 +93,10 @@ class UserPhoneVerification(models.Model):
     """
     This class is used to verify user and their contact no.
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='phone_verification_set')
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="phone_verification_set"
+    )
     country_code = models.IntegerField()
     phone_no = models.CharField(max_length=17)
     otp = models.CharField(max_length=10)
@@ -105,12 +109,13 @@ class UserPhoneVerification(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta(object):
-        """ Meta information """
-        db_table = 'user_phone_verification'
+        """Meta information"""
+
+        db_table = "user_phone_verification"
 
     def __str__(self):
         return self.phone
 
     @staticmethod
     def generate_otp():
-        return ''.join([str(random.randrange(9)) for _ in range(4)])
+        return "".join([str(random.randrange(9)) for _ in range(4)])
