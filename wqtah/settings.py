@@ -53,7 +53,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 

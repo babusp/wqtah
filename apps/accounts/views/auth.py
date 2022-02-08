@@ -4,7 +4,7 @@ auth views
 # django imports
 from django.contrib.auth import get_user_model
 
-from rest_framework import status
+from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,6 +16,7 @@ from apps.accounts.serializers.auth import (
     RegisterSerializer,
     SendOtpSerializer,
     LoginSerializer,
+    LogoutSerializer,
 )
 from apps.utility.viewsets import CustomModelPostViewSet
 from apps.utility.common import CustomResponse
@@ -97,3 +98,19 @@ class SendOTPViewSet(CustomModelPostViewSet):
         return CustomResponse(
             status=200, detail=SUCCESS_CODE["2005"]
         ).success_response()
+
+
+class LogoutView(generics.GenericAPIView):
+    """User Logout"""
+
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        """User Logout validate"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2004"]
+        ).success_response(data=serializer.data)
