@@ -9,14 +9,10 @@ from apps.accounts.models.auth import User
 
 
 class TestSetUp(APITestCase):
-
     def setUp(self):
-        self.register_url = 'http://localhost:8000/v1/login/'
+        self.register_url = "http://localhost:8000/v1/login/"
 
-        self.user_data = {
-            'email_or_phoneNo': "kiwi@gmail.com",
-            'password': "admin"
-        }
+        self.user_data = {"email_or_phoneNo": "kiwi@gmail.com", "password": "admin"}
 
         return super().setUp()
 
@@ -25,19 +21,20 @@ class TestSetUp(APITestCase):
 
 
 class TestView(TestSetUp):
-
     def test_user_register(self):
         res = self.client.post(self.register_url, self.user_data, format="json")
         print("res................", res.data)
 
-        self.assertEqual(res.data['email_or_phoneNo'], self.user_data['email_or_phoneNo'])
+        self.assertEqual(
+            res.data["email_or_phoneNo"], self.user_data["email_or_phoneNo"]
+        )
         self.assertEqual(res.status_code, 201)
 
     def test_user_login_after_verification(self):
         response = self.client.post(self.register_url, self.user_data, format="json")
         print("res................", response.data)
 
-        email = response.data['email_or_phoneNo']
+        email = response.data["email_or_phoneNo"]
         print("email................", email)
 
         user = User.objects.filter(email=email)

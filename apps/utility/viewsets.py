@@ -167,6 +167,22 @@ class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
     pass
 
 
+class CustomModelUpdateViewSet(UpdateModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
+    """
+
+    pass
+
+
+class CustomModelDestroyViewSet(DestroyModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
+    """
+
+    pass
+
+
 def error_404(description):
     """function to return error with status code"""
     raise ValidationError(

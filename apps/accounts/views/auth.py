@@ -13,7 +13,7 @@ from apps.accounts.serializers.auth import (
     RegisterSerializer,
     SendOtpSerializer,
     LoginSerializer,
-    UserProfileSerializer,
+    # UserProfileSerializer,
 )
 from apps.utility.viewsets import (
     CustomModelPostViewSet,
@@ -79,22 +79,22 @@ class SendOTPViewSet(CustomModelPostViewSet):
         ).success_response()
 
 
-class ProfileViewSet(CustomModelViewSet):
-    """ViewSet class for profile"""
+# class ProfileViewSet(CustomModelViewSet):
+#     """ViewSet class for profile"""
 
-    serializer_class = UserProfileSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    http_method_names = ("get", "patch")
+#     serializer_class = UserProfileSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     http_method_names = ("get", "patch")
 
-    def get_queryset(self):
-        """Return profile related to user only"""
-        if self.request.user.id:
-            return self.request.user
+#     def get_queryset(self):
+#         """Return profile related to user only"""
+#         if self.request.user.id:
+#             return self.request.user
 
-    def get_object(self):
-        """
-        return request user
-        """
-        user_id = self.kwargs.get("pk")
-        user_obj = get_object_or_404(User, id=user_id)
-        return user_obj
+#     def get_object(self):
+#         """
+#         return request user
+#         """
+#         user_id = self.kwargs.get("pk")
+#         user_obj = get_object_or_404(User, id=user_id)
+#         return user_obj

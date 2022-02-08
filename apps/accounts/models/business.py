@@ -1,4 +1,3 @@
-from distutils.command.upload import upload
 from django.db import models
 from apps.utility.models import BaseModel
 from ckeditor.fields import RichTextField
