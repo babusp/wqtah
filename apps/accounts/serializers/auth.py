@@ -90,6 +90,8 @@ class UserWithTokenSerializer(UserBasicInfoSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     """used to register the user"""
+    country_code = serializers.CharField(required=True, allow_blank=False, allow_null=False)
+    phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
         model = USER
@@ -127,8 +129,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class SendOtpSerializer(serializers.Serializer):
     """used to send otp to user phone no"""
 
-    country_code = serializers.CharField(required=True)
-    phone_no = serializers.CharField(required=True)
+    country_code = serializers.CharField(required=True, allow_blank=False, allow_null=False)
+    phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
         fields = ("country_code", "phone_no")
@@ -142,6 +144,25 @@ class SendOtpSerializer(serializers.Serializer):
         except Exception as e:
             raise serializers.ValidationError(ERROR_CODE["4010"])
         return validated_data
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """Base class for user profile"""
+
+    class Meta:
+        """
+        Meta class defining user model and including field
+        """
+
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "country_code",
+            "phone_no",
+        ]
 
 
 class LogoutSerializer(serializers.Serializer):
