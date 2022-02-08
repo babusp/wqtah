@@ -145,19 +145,21 @@ class SendOtpSerializer(serializers.Serializer):
 
 
 class LogoutSerializer(serializers.Serializer):
+    """User LogoutSerializer"""
+
     refresh = serializers.CharField()
 
     def validate(self, attrs):
+        """User LogoutSerializer"""
+
         self.token = attrs['refresh']
         return attrs
 
     def save(self, **kwargs):
+        """User Logout Exception handling"""
 
         try:
             RefreshToken(self.token).blacklist()
 
         except TokenError:
-
             raise serializers.ValidationError(ERROR_CODE["4011"])
-
-
