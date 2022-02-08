@@ -5,6 +5,7 @@ auth serializer file
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 # local imports
 from apps.accounts.messages import ERROR_CODE
@@ -141,3 +142,19 @@ class SendOtpSerializer(serializers.Serializer):
         except Exception as e:
             raise serializers.ValidationError(ERROR_CODE["4010"])
         return validated_data
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+
+        try:
+            RefreshToken(self.token).blacklist()
+
+        except TokenError:
+            return ERROR_CODE["4011"]

@@ -9,6 +9,7 @@ from apps.accounts.views.auth import (
     VerifyOTPEndpoint,
     SendOTPViewSet,
     RegistrationViewSet,
+    LogoutView,
 )
 
 router = routers.DefaultRouter()
@@ -22,4 +23,5 @@ router.register(r"login", LoginViewSet, basename="login"),
 
 urlpatterns = [
     path("verify/otp/", VerifyOTPEndpoint.as_view(), name="otp-verification"),
+    path('logout/', LogoutView.as_view(), name="logout"),
 ] + router.urls
