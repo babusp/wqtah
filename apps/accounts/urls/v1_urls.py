@@ -8,7 +8,7 @@ from apps.accounts.views.auth import (
     LoginViewSet,
     SendOTPViewSet,
     RegistrationViewSet,
-    # ProfileViewSet,
+    ProfileViewSet,
 )
 from apps.accounts.views import BusinessDetailViewSet, BusinessViewSet
 
@@ -24,3 +24,11 @@ router.register(r"amenity", AmeniyViewSet, basename="amenities")
 # local imports
 
 urlpatterns = [] + router.urls
+router.register(r"profile", ProfileViewSet, basename="login"),
+
+
+# local imports
+
+# urlpatterns = [
+#     path("logout/", LogoutView.as_view(), name="logout"),
+# ] + router.urls

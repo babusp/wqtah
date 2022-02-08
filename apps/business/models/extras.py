@@ -5,6 +5,8 @@ from apps.accounts.models import BusinessDetail, business
 
 # Create your models here.
 
+# Create your models here.
+
 
 class Categories(BaseModel):
     """

@@ -25,6 +25,8 @@ ERROR_CODE = {
     "4009": "Invalid OTP.",
     "4010": "Invalid Phone no.",
     "4011": "Object not found.",
+    "4011": "Token is expired or invalid",
+    "4012": "Object not found.",
 }
 
 SMS_TEMPLATE = {
