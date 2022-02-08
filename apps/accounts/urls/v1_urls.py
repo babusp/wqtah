@@ -3,8 +3,14 @@ urls file
 """
 # third party imports
 from rest_framework import routers
-from apps.accounts.views.auth import LoginViewSet, SendOTPViewSet, RegistrationViewSet, ProfileViewSet
-
+from django.urls import path
+from apps.accounts.views.auth import (
+    LoginViewSet,
+    SendOTPViewSet,
+    RegistrationViewSet,
+    LogoutView,
+    ProfileViewSet
+)
 
 router = routers.DefaultRouter()
 # register router for send otp in user
@@ -17,4 +23,5 @@ router.register(r"profile", ProfileViewSet, basename="login"),
 # local imports
 
 urlpatterns = [
+    path('logout/', LogoutView.as_view(), name="logout"),
 ] + router.urls

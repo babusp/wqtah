@@ -3,14 +3,18 @@ auth views
 """
 # django imports
 from django.contrib.auth import get_user_model
-from rest_framework import status, permissions
+from rest_framework import status, generics, permissions
 
 # local imports
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
 from apps.accounts.models import User
-from apps.accounts.serializers.auth import (RegisterSerializer, SendOtpSerializer, LoginSerializer,
-                                            UserProfileSerializer)
 from apps.utility.viewsets import CustomModelPostViewSet, get_object_or_404, CustomModelViewSet
+from apps.accounts.serializers.auth import (
+    RegisterSerializer,
+    SendOtpSerializer,
+    LoginSerializer,
+    LogoutSerializer, UserProfileSerializer
+)
 from apps.utility.common import CustomResponse
 
 USER = get_user_model()
@@ -92,3 +96,18 @@ class ProfileViewSet(CustomModelViewSet):
         user_id = self.kwargs.get('pk')
         user_obj = get_object_or_404(User, id=user_id)
         return user_obj
+
+class LogoutView(generics.GenericAPIView):
+    """User Logout"""
+
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        """User Logout validate"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2004"]
+        ).success_response(data=serializer.data)

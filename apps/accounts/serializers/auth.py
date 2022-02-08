@@ -5,6 +5,7 @@ auth serializer file
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 # local imports
 from apps.accounts.messages import ERROR_CODE
@@ -162,3 +163,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "country_code",
             "phone_no",
         ]
+
+
+class LogoutSerializer(serializers.Serializer):
+    """User LogoutSerializer"""
+
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        """User LogoutSerializer"""
+
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        """User Logout Exception handling"""
+
+        try:
+            RefreshToken(self.token).blacklist()
+
+        except TokenError:
+            raise serializers.ValidationError(ERROR_CODE["4011"])
