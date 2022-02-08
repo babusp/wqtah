@@ -157,4 +157,7 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
 
         except TokenError:
-            return ERROR_CODE["4011"]
+
+            raise serializers.ValidationError(ERROR_CODE["4011"])
+
+
