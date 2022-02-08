@@ -16,7 +16,7 @@ ERROR_CODE = {
     "4000": "ERROR.",
     "4001": "User with this phone number doesn't exists.",
     "4002": "Wrong password.",
-    "4003": "please check credentials",
+    "4003": "Invalid login credentials",
     "4004": "User with this email already exists.",
     "4005": "User is not verified.",
     "4006": "New password and Confirm password are not same.",
@@ -24,6 +24,7 @@ ERROR_CODE = {
     "4008": "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
     "4009": "Invalid OTP.",
     "4010": "Invalid Phone no.",
+    "4011": "Object not found.",
 }
 
 SMS_TEMPLATE = {

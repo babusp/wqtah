@@ -10,7 +10,9 @@ from rest_framework import status
 from rest_framework.settings import api_settings
 from rest_framework.viewsets import GenericViewSet
 
+from apps.accounts.messages import ERROR_CODE
 from apps.utility.common import CustomResponse
+from apps.utility.custom_exception import ValidationError
 
 
 class CreateModelMixin:
@@ -165,19 +167,49 @@ class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
     pass
 
 
-class CustomModelUpdateViewSet(UpdateModelMixin, GenericViewSet):
+def error_404(description):
+    """function to return error with status code"""
+    raise ValidationError(
+        detail={
+            "detail": {"message": description},
+            "status_code": status.HTTP_404_NOT_FOUND,
+        },
+        status_code=status.HTTP_404_NOT_FOUND,
+    )
+
+
+def get_object_or_404(model, *args, **kwargs):
     """
-    A view-set that provides default `update()` actions, and provide a unique response format .
+    return record with(args=kwargs) if available in model
+    else return validation error
+    :param model:
+    :param args:
+    :param kwargs:
+    :return:
     """
+    try:
+        return model.objects.get(*args, **kwargs)
+    except model.DoesNotExist:
+        raise error_404(description=ERROR_CODE["4011"])
 
 
-pass
+def error_400(description):
+    """function to return error with status code"""
+    raise ValidationError(
+        detail={"data": {"message": description}},
+        status_code=status.HTTP_400_BAD_REQUEST,
+    )
 
 
-class CustomModelDestroyViewSet(DestroyModelMixin, GenericViewSet):
+def validation_error(description):
     """
-    A view-set that provides default `destroy()` or delete actions, and provide a unique response format .
+    Raise validation error in formatted dictionary
     """
-
-
-pass
+    return ValidationError(
+        {
+            "detail": {"message": description}
+            if isinstance(description, str)
+            else description,
+            "status_code": int(status.HTTP_400_BAD_REQUEST),
+        }
+    )
