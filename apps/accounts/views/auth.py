@@ -17,6 +17,7 @@ from apps.accounts.serializers.auth import (
     SendOtpSerializer,
     LoginSerializer,
 )
+from apps.utility.serializers import serializer
 from apps.utility.viewsets import CustomModelPostViewSet
 from apps.utility.common import CustomResponse
 
@@ -53,13 +54,13 @@ class RegistrationViewSet(CustomModelPostViewSet):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        """ overriding for custom response """
+        """overriding for custom response"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return CustomResponse(
-                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
-            ).success_response(data=serializer.data)
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
 
 
 class VerifyOTPEndpoint(APIView):
@@ -81,8 +82,7 @@ class VerifyOTPEndpoint(APIView):
         else:
             return CustomResponse(
                 status=status.HTTP_400_BAD_REQUEST, detail=ERROR_CODE["4009"]
-            ).error_message(error=serializer.errors)
-
+            ).error_message(error=serializer.error)
             # {"message": "otp not verified"}, status=status.HTTP_400_BAD_REQUEST
 
 

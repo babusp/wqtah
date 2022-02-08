@@ -9,6 +9,7 @@ SUCCESS_CODE = {
     "2003": "Password Reset Successfully.",
     "2004": "User logged-out successfully",
     "2005": "OTP send to your mobile number",
+    "2006": "business deleted",
 }
 
 ERROR_CODE = {

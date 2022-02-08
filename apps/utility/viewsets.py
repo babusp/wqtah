@@ -163,3 +163,21 @@ class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
     """
 
     pass
+
+
+class CustomModelUpdateViewSet(UpdateModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `update()` actions, and provide a unique response format .
+    """
+
+
+pass
+
+
+class CustomModelDestroyViewSet(DestroyModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `destroy()` or delete actions, and provide a unique response format .
+    """
+
+
+pass
