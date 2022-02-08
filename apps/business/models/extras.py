@@ -1,6 +1,8 @@
 from django.db import models
-# Create your models here.
+from django.utils.translation import gettext_lazy as _
 from apps.utility.models import BaseModel
+
+# Create your models here.
 
 
 class Categories(BaseModel):
@@ -9,6 +11,9 @@ class Categories(BaseModel):
     """
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return self.name
 
 
 class SubCategory(BaseModel):
