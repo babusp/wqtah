@@ -1,3 +1,4 @@
+""" business extra model """
 from django.db import models
 from apps.utility.models import BaseModel
 

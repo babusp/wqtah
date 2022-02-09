@@ -1,4 +1,3 @@
-from ckeditor.fields import RichTextField
 from apps.accounts.models.auth import User
 from apps.business.choices import LEVEL_CHOICES
 from apps.business.models.extras import Amenities, Categories, SubCategory
