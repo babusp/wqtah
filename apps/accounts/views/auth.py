@@ -7,12 +7,8 @@ from rest_framework import status, generics, permissions
 
 # local imports
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.models import User
-from apps.utility.viewsets import (
-    CustomModelPostViewSet,
-    get_object_or_404,
-    CustomModelViewSet,
-)
+
+from apps.utility.viewsets import CustomModelPostViewSet, get_object_or_404, CustomModelViewSet
 from apps.accounts.serializers.auth import (
     RegisterSerializer,
     SendOtpSerializer,
@@ -85,8 +81,9 @@ class ProfileViewSet(CustomModelViewSet):
 
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
-    http_method_names = ("get", "patch")
+
+    queryset = USER.objects.all()
+    http_method_names = ('get', 'patch')
 
     def get_queryset(self):
         """Return profile related to user only"""
@@ -99,8 +96,9 @@ class ProfileViewSet(CustomModelViewSet):
         """
         return requested user
         """
-        user_id = self.kwargs.get("pk")
-        user_obj = get_object_or_404(User, id=user_id)
+
+        user_id = self.kwargs.get('pk')
+        user_obj = get_object_or_404(USER, id=user_id)
         return user_obj
 
 

@@ -23,7 +23,14 @@ class SubCategory(BaseModel):
 
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
+
+
+class CategorySubMapping(BaseModel):
+    """
+    sub category mapping model
+    """
     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
 
 
 class Amenities(BaseModel):
@@ -31,4 +38,5 @@ class Amenities(BaseModel):
     Amenities model
     """
     name = models.CharField(max_length=100)
+    icons = models.ImageField(null=True, blank=True)
     is_active = models.BooleanField(default=True)

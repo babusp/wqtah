@@ -6,15 +6,17 @@ from apps.business.models.extras import Amenities, Categories, SubCategory
 """ business model """
 # third party import
 from django.db import models
+from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField
 
 # local imports
 from apps.utility.models import BaseModel, Attachments
+USER = get_user_model()
 
 
 class BusinessProfile(BaseModel):
     """Business Profile model class"""
-
+    user = models.ForeignKey(USER, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     email = models.EmailField(max_length=256)
     identity_proof = models.FileField(upload_to="media")
@@ -28,6 +30,7 @@ class BusinessProfile(BaseModel):
     license = models.CharField(max_length=256, null=True, blank=True)
     company_phone = models.CharField(max_length=256, null=True, blank=True)
     company_policies = RichTextField(null=True, blank=True)
+    is_admin_verified = models.BooleanField(default=False)
 
 
 class BusinessProfileAmenities(BaseModel):

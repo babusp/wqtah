@@ -172,15 +172,12 @@ class LogoutSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """User LogoutSerializer"""
-
         self.token = attrs['refresh']
         return attrs
 
     def save(self, **kwargs):
         """User Logout Exception handling"""
-
         try:
             RefreshToken(self.token).blacklist()
-
         except TokenError:
             raise serializers.ValidationError(ERROR_CODE["4011"])
