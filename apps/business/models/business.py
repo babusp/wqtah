@@ -1,7 +1,13 @@
-from django.db import models
 from ckeditor.fields import RichTextField
 from apps.accounts.models.auth import User
 from apps.business.models import LEVEL_CHOICES
+
+""" business model """
+# third party import
+from django.db import models
+from ckeditor.fields import RichTextField
+
+# local imports
 from apps.business.models import Categories, SubCategory, Amenities
 from apps.utility.models import BaseModel, Attachments
 
@@ -17,7 +23,7 @@ class BusinessProfile(BaseModel):
     lng = models.CharField(max_length=256, null=True, blank=True)
     description = RichTextField(null=True, blank=True)
     level = models.IntegerField(choices=LEVEL_CHOICES, null=True, blank=True)
-    company_name = models.CharField(max_length=256, null=True, blank=True)
+    company_name = models.CharField(max_length=256, null=True, blank=Tru)
     company_email = models.CharField(max_length=256, null=True, blank=True)
     license = models.CharField(max_length=256, null=True, blank=True)
     company_phone = models.CharField(max_length=256, null=True, blank=True)
