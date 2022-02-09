@@ -1,5 +1,9 @@
+""" business model """
+# third party import
 from django.db import models
 from ckeditor.fields import RichTextField
+# local imports
+
 from apps.accounts.models.auth import User
 from apps.business.choices import LEVEL_CHOICES
 from apps.business.models import Categories, SubCategory, Amenities
