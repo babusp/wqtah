@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from apps.utility.models import BaseModel
-from apps.accounts.models import BusinessDetail, business
+from apps.business.views import business
 
 # Create your models here.
 
