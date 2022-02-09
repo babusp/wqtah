@@ -1,6 +1,6 @@
 """ Business admin """
 from django.contrib import admin
-from apps.business.models import Categories, SubCategory
+from apps.business.models.extras import Categories, SubCategory
 # Register your models here.
 
 

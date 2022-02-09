@@ -1,25 +1,17 @@
 # django imports
-from django.contrib.auth import get_user_model
-
 from rest_framework import status, serializers
 from rest_framework.response import Response
-from apps.business.models.business import BusinessProfile
 
-from apps.utility.viewsets import (
-    CustomModelPostListViewSet,
-    CustomModelRetrieveViewSet,
-    CustomModelUpdateViewSet,
-    CustomModelDestroyViewSet,
-)
+from apps.utility.viewsets import CustomModelViewSet
 from apps.utility.common import CustomResponse
-from apps.accounts.serializers import BusinessSerializer
-
+from apps.business.models.business import BusinessProfile
+from apps.business.serializers import BusinessSerializer
+from apps.accounts.messages import SUCCESS_CODE
 
 # local imports
-from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
 
 
-class BusinessViewSet(CustomModelPostListViewSet):
+class BusinessViewSet(CustomModelViewSet):
     """View set class to register user"""
 
     serializer_class = BusinessSerializer
@@ -40,14 +32,6 @@ class BusinessViewSet(CustomModelPostListViewSet):
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
         ).success_response(data=serializer.data)
-
-
-class BusinessDetailViewSet(
-    CustomModelRetrieveViewSet, CustomModelUpdateViewSet, CustomModelDestroyViewSet
-):
-    """View set class to register user"""
-
-    serializer_class = BusinessSerializer
 
     def get_object(self, pk):
         try:

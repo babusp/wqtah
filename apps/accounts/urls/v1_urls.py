@@ -3,11 +3,13 @@ urls file
 """
 # third party imports
 from rest_framework import routers
+from django.urls import path
 from apps.accounts.views.auth import (
     LoginViewSet,
     SendOTPViewSet,
     RegistrationViewSet,
-    ProfileViewSet,
+    LogoutView,
+    ProfileViewSet
 )
 
 

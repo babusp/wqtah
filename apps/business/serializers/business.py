@@ -4,6 +4,12 @@ from apps.business.models.extras import Amenities
 from .amenities import AmenitySerilizer
 
 
+class AmenitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Amenities
+        fields = "__all__"
+
+
 class BusinessSerializer(serializers.ModelSerializer):
     amenities = serializers.SerializerMethodField(
         method_name="get_amenities", read_only=True
