@@ -1,9 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from apps.utility.models import BaseModel
-from apps.business.views import business
-
-# Create your models here.
+from apps.business.models import BusinessProfile
 
 # Create your models here.
 
@@ -36,7 +34,7 @@ class Amenities(BaseModel):
     """
 
     business = models.ForeignKey(
-        BusinessDetail, on_delete=models.CASCADE, null=True, blank=True
+        BusinessProfile, on_delete=models.CASCADE, null=True, blank=True
     )
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)

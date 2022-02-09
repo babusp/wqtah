@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.accounts.models import BusinessDetail
+from apps.business.models.business import BusinessProfile
 from apps.business.models.extras import Amenities
 from .amenities import AmenitySerilizer
 
@@ -10,7 +10,7 @@ class BusinessSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = BusinessDetail
+        model = BusinessProfile
         fields = "__all__"
 
     def get_amenities(self, obj):

@@ -3,9 +3,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import status, serializers
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from apps.business.views import business
-from apps.accounts.serializers import BusinessDetail
+from apps.business.models.business import BusinessProfile
 
 from apps.utility.viewsets import (
     CustomModelPostListViewSet,
@@ -25,7 +23,7 @@ class BusinessViewSet(CustomModelPostListViewSet):
     """View set class to register user"""
 
     serializer_class = BusinessSerializer
-    queryset = BusinessDetail.objects.all()
+    queryset = BusinessProfile.objects.all()
 
     def create(self, request, *args, **kwargs):
         """overriding for custom response"""
@@ -53,9 +51,9 @@ class BusinessDetailViewSet(
 
     def get_object(self, pk):
         try:
-            queryset = BusinessDetail.objects.get(pk=pk)
+            queryset = BusinessProfile.objects.get(pk=pk)
             return queryset
-        except BusinessDetail.DoesNotExist:
+        except BusinessProfile.DoesNotExist:
             raise serializers.ValidationError({"message": "business id not found."})
 
     def retrieve(self, request, pk):

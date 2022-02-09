@@ -1,6 +1,6 @@
 from ckeditor.fields import RichTextField
 from apps.accounts.models.auth import User
-from apps.business.models import LEVEL_CHOICES
+from apps.business.choices import LEVEL_CHOICES
 
 """ business model """
 # third party import
