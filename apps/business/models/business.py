@@ -10,11 +10,13 @@ from ckeditor.fields import RichTextField
 
 # local imports
 from apps.utility.models import BaseModel, Attachments
+
 USER = get_user_model()
 
 
 class BusinessProfile(BaseModel):
     """Business Profile model class"""
+
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     email = models.EmailField(max_length=256)

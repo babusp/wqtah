@@ -1,25 +1,35 @@
 # django imports
-from rest_framework import status, serializers
+from multiprocessing import context
+from rest_framework import status, serializers, permissions
 from rest_framework.response import Response
+from apps.accounts.models.auth import User
+from apps.business.serializers.amenities import (
+    AmenitySerializer,
+    BusinessProfileAmenitySerilizer,
+)
 
-from apps.utility.viewsets import CustomModelViewSet
+from apps.utility.viewsets import CustomModelPostListViewSet
 from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile
+from apps.business.models.business import BusinessProfile, BusinessProfileAmenities
 from apps.business.serializers import BusinessSerializer
 from apps.accounts.messages import SUCCESS_CODE
 
 # local imports
 
 
-class BusinessViewSet(CustomModelViewSet):
+class BusinessViewSet(CustomModelPostListViewSet):
     """View set class to register user"""
+
+    permission_classes = (permissions.IsAuthenticated,)
 
     serializer_class = BusinessSerializer
     queryset = BusinessProfile.objects.all()
 
     def create(self, request, *args, **kwargs):
         """overriding for custom response"""
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(
+            data=request.data, context={"user": request.user}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return CustomResponse(
@@ -58,3 +68,49 @@ class BusinessViewSet(CustomModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AmenityViewSet(CustomModelPostListViewSet):
+    """View set class to register user"""
+
+    serializer_class = AmenitySerializer
+    queryset = BusinessProfileAmenities.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+        ).success_response(data=serializer.data)
+
+
+class BusinessProfileAmenityViewSet(CustomModelPostListViewSet):
+    """View set class to register user"""
+
+    serializer_class = BusinessProfileAmenitySerilizer
+    queryset = BusinessProfileAmenities.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+        ).success_response(data=serializer.data)
