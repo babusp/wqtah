@@ -96,10 +96,26 @@ class ProfileViewSet(CustomModelViewSet):
         """
         return requested user
         """
-
         user_id = self.kwargs.get('pk')
         user_obj = get_object_or_404(USER, id=user_id)
         return user_obj
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Override  method to pass current request to the serializer
+        :param request:  wsgi request
+        :param args:  list
+        :param kwargs: dict
+        :return: Json Response
+        """
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=True,
+                                           context={"user": self.request.user})
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2007"]
+        ).success_response(serializer.data)
 
 
 class LogoutView(generics.GenericAPIView):

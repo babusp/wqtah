@@ -105,6 +105,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             "otp",
         )
 
+    def validate(self, attrs):
+        user = User.objects.filter(phone_no=attrs["phone_no"]).first()
+        if user:
+            raise serializers.ValidationError(ERROR_CODE["4004"])
+        return attrs
+
     def to_representation(self, instance):
         """override to return user serialized data"""
         return UserWithTokenSerializer(instance).data
