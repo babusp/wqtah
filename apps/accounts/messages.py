@@ -9,7 +9,10 @@ SUCCESS_CODE = {
     "2003": "Password Reset Successfully.",
     "2004": "User logged-out successfully",
     "2005": "OTP send to your mobile number",
-    "2006": "Service save successfully."
+    "2006": "business deleted",
+    "2007": "Profile updated successfully",
+    "2008": "Service save successfully."
+
 }
 
 ERROR_CODE = {
@@ -17,17 +20,22 @@ ERROR_CODE = {
     "4001": "User with this phone number doesn't exists.",
     "4002": "Wrong password.",
     "4003": "Invalid login credentials",
-    "4004": "User with this email already exists.",
+    "4004": "User with this email/phone already exists.",
     "4005": "User is not verified.",
     "4006": "New password and Confirm password are not same.",
     "4007": "Link Expired.",
     "4008": "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
     "4009": "Invalid OTP.",
     "4010": "Invalid Phone no.",
+<<<<<<< HEAD
     "4011": "Token is expired or invalid",
     "4012": "Object not found.",
     "4013": "End date must occur after Start date.",
 
+=======
+    "4011": "Object not found.",
+    "4012": "Token is expired or invalid",
+>>>>>>> f4ab18de98bace2f748aa7a91e087e1178bfdf35
 }
 
 SMS_TEMPLATE = {

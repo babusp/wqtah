@@ -25,7 +25,7 @@ class ServiceViewSet(CustomModelPostListViewSet):
         serializer.is_valid(raise_exception=True)
         a = serializer.save()
         return CustomResponse(
-            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2006"]
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2008"]
         ).success_response(data=serializer.data)
 
     def list(self, request, *args, **kwargs):

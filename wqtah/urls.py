@@ -33,4 +33,5 @@ urlpatterns = [
     path("", include(("apps.business.urls.urls", "business"), namespace="business")),
     path("api-doc/", schema_view.with_ui("swagger", cache_timeout=0)),
     path("utility/", include(("apps.utility.urls", "utility"), namespace="utility")),
+    path("", include(("apps.business.urls.urls", "business"), namespace="business")),
 ]

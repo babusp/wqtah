@@ -106,6 +106,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             "otp",
         )
 
+    def validate(self, attrs):
+        """ validating phone no """
+        user = User.objects.filter(phone_no=attrs["phone_no"]).first()
+        if user:
+            raise serializers.ValidationError(ERROR_CODE["4004"])
+        return attrs
+
     def to_representation(self, instance):
         """override to return user serialized data"""
         return UserWithTokenSerializer(instance).data
@@ -118,13 +125,13 @@ class RegisterSerializer(serializers.ModelSerializer):
                 validated_data["phone_no"],
                 validated_data["otp"],
             )
+            if response == "approved":
+                instance = User.objects.create_user(**validated_data)
+                instance.otp_verified = True
+                instance.save()
+                return instance
         except Exception:
             raise serializers.ValidationError(ERROR_CODE["4009"])
-        if response == "approved":
-            instance = User.objects.create_user(**validated_data)
-            instance.otp_verified = True
-            instance.save()
-            return instance
 
 
 class SendOtpSerializer(serializers.Serializer):
@@ -139,13 +146,20 @@ class SendOtpSerializer(serializers.Serializer):
         """
         fields = ("country_code", "phone_no")
 
+    def validate(self, attrs):
+        """ validating phone no """
+        user = User.objects.filter(phone_no=attrs["phone_no"]).first()
+        if user:
+            raise serializers.ValidationError(ERROR_CODE["4004"])
+        return attrs
+
     def create(self, validated_data):
         """overriding create serializer"""
         try:
             send_twilio_otp(
                 validated_data["country_code"], validated_data["phone_no"], "sms"
             )
-        except Exception as e:
+        except Exception:
             raise serializers.ValidationError(ERROR_CODE["4010"])
         return validated_data
 
@@ -176,15 +190,12 @@ class LogoutSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """User LogoutSerializer"""
-
         self.token = attrs['refresh']
         return attrs
 
     def save(self, **kwargs):
         """User Logout Exception handling"""
-
         try:
             RefreshToken(self.token).blacklist()
-
         except TokenError:
             raise serializers.ValidationError(ERROR_CODE["4011"])
