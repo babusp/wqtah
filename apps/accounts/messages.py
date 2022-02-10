@@ -27,15 +27,10 @@ ERROR_CODE = {
     "4008": "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
     "4009": "Invalid OTP.",
     "4010": "Invalid Phone no.",
-<<<<<<< HEAD
-    "4011": "Token is expired or invalid",
-    "4012": "Object not found.",
-    "4013": "End date must occur after Start date.",
-
-=======
     "4011": "Object not found.",
     "4012": "Token is expired or invalid",
->>>>>>> f4ab18de98bace2f748aa7a91e087e1178bfdf35
+    "4013": "End date must occur after Start date.",
+
 }
 
 SMS_TEMPLATE = {

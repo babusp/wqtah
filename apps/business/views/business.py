@@ -5,7 +5,7 @@ from apps.business.serializers.amenities import AmenitySerializer, BusinessProfi
 from apps.utility.viewsets import CustomModelPostListViewSet
 from apps.utility.common import CustomResponse
 from apps.business.models.business import BusinessProfile, BusinessProfileAmenities
-from apps.business.serializers import BusinessSerializer
+from apps.business.serializers import BusinessSerializer, ServiceSerializer
 from apps.accounts.messages import SUCCESS_CODE
 
 # local imports
@@ -103,6 +103,29 @@ class BusinessProfileAmenityViewSet(CustomModelPostListViewSet):
         ).success_response(data=serializer.data)
 
     def list(self, request, *args, **kwargs):
+        queryset = self.queryset
+        serializer = self.serializer_class(queryset, many=True)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+        ).success_response(data=serializer.data)
+
+
+class ServiceViewSet(CustomModelPostListViewSet):
+    """View set class to register user"""
+
+    serializer_class = ServiceSerializer
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        a = serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2008"]
+        ).success_response(data=serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        """overriding for custom response"""
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
         return CustomResponse(
