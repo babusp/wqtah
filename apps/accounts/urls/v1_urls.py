@@ -2,6 +2,7 @@
 urls file
 """
 # third party imports
+
 from rest_framework import routers
 from django.urls import path
 from apps.accounts.views.auth import (
@@ -9,7 +10,7 @@ from apps.accounts.views.auth import (
     SendOTPViewSet,
     RegistrationViewSet,
     LogoutView,
-    ProfileViewSet
+    ProfileViewSet,
 )
 
 

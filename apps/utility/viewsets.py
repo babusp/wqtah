@@ -185,13 +185,7 @@ class CustomModelDestroyViewSet(DestroyModelMixin, GenericViewSet):
 
 def error_404(description):
     """function to return error with status code"""
-    raise ValidationError(
-        detail={
-            "detail": {"message": description},
-            "status_code": status.HTTP_404_NOT_FOUND,
-        },
-        status_code=status.HTTP_404_NOT_FOUND,
-    )
+    raise ValidationError(description)
 
 
 def get_object_or_404(model, *args, **kwargs):
@@ -211,21 +205,11 @@ def get_object_or_404(model, *args, **kwargs):
 
 def error_400(description):
     """function to return error with status code"""
-    raise ValidationError(
-        detail={"data": {"message": description}},
-        status_code=status.HTTP_400_BAD_REQUEST,
-    )
+    raise ValidationError(description)
 
 
 def validation_error(description):
     """
     Raise validation error in formatted dictionary
     """
-    return ValidationError(
-        {
-            "detail": {"message": description}
-            if isinstance(description, str)
-            else description,
-            "status_code": int(status.HTTP_400_BAD_REQUEST),
-        }
-    )
+    return ValidationError(description if isinstance(description, str) else description)
