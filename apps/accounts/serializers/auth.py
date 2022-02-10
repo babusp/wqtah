@@ -124,13 +124,13 @@ class RegisterSerializer(serializers.ModelSerializer):
                 validated_data["phone_no"],
                 validated_data["otp"],
             )
+            if response == "approved":
+                instance = User.objects.create_user(**validated_data)
+                instance.otp_verified = True
+                instance.save()
+                return instance
         except Exception:
             raise serializers.ValidationError(ERROR_CODE["4009"])
-        if response == "approved":
-            instance = User.objects.create_user(**validated_data)
-            instance.otp_verified = True
-            instance.save()
-            return instance
 
 
 class SendOtpSerializer(serializers.Serializer):
@@ -155,7 +155,7 @@ class SendOtpSerializer(serializers.Serializer):
             send_twilio_otp(
                 validated_data["country_code"], validated_data["phone_no"], "sms"
             )
-        except Exception as e:
+        except Exception:
             raise serializers.ValidationError(ERROR_CODE["4010"])
         return validated_data
 

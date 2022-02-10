@@ -5,8 +5,6 @@ urls file
 # third party imports
 from rest_framework import routers
 
-from django.urls import path
-from apps.business.views.business import BusinessViewSet
 from apps.business.views.business import (
     AmenityViewSet,
     BusinessViewSet,
@@ -23,7 +21,6 @@ router.register(
     BusinessProfileAmenityViewSet,
     basename="business-profile-amenities",
 )
-
 
 # local imports
 

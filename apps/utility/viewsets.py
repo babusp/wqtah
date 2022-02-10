@@ -200,7 +200,7 @@ def get_object_or_404(model, *args, **kwargs):
     try:
         return model.objects.get(*args, **kwargs)
     except model.DoesNotExist:
-        raise error_404(description=ERROR_CODE["4011"])
+        error_404(description=ERROR_CODE["4011"])
 
 
 def error_400(description):

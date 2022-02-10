@@ -1,4 +1,5 @@
-from dataclasses import field
+""" amenities serializer
+"""
 from rest_framework import serializers
 from apps.business.models.business import BusinessProfileAmenities
 from apps.business.models.extras import Amenities
