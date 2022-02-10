@@ -13,8 +13,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # local imports
 from apps.accounts import constants as cons
 from apps.accounts.managers import UserManager
-from apps.business.models import Categories, SubCategory, Amenities
-from apps.utility.models import BaseModel, Attachments
 
 
 class User(AbstractBaseUser, PermissionsMixin):

@@ -9,6 +9,7 @@ SUCCESS_CODE = {
     "2003": "Password Reset Successfully.",
     "2004": "User logged-out successfully",
     "2005": "OTP send to your mobile number",
+    "2006": "Service save successfully."
 }
 
 ERROR_CODE = {
@@ -25,6 +26,8 @@ ERROR_CODE = {
     "4010": "Invalid Phone no.",
     "4011": "Token is expired or invalid",
     "4012": "Object not found.",
+    "4013": "End date must occur after Start date.",
+
 }
 
 SMS_TEMPLATE = {
