@@ -1,8 +1,8 @@
 """ utility models """
 from django.db import models
-from apps.utility.constants import IMAGE, VIDEO
 
 # Create your models here.
+from apps.business.choices import MEDIA_TYPE
 
 
 class BaseModel(models.Model):
@@ -22,10 +22,6 @@ class Attachments(BaseModel):
     create table Attachments
     """
 
-    MEDIA_TYPE = (
-        (IMAGE, "image"),
-        (VIDEO, "video"),
-    )
     name = models.CharField(max_length=255, blank=True, null=True)
     file_type = models.CharField(
         max_length=2, blank=True, null=True, choices=MEDIA_TYPE

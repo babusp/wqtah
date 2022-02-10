@@ -10,6 +10,7 @@ SUCCESS_CODE = {
     "2004": "User logged-out successfully",
     "2005": "OTP send to your mobile number",
     "2006": "business deleted",
+    "2007": "Profile updated successfully",
 }
 
 ERROR_CODE = {
@@ -17,7 +18,7 @@ ERROR_CODE = {
     "4001": "User with this phone number doesn't exists.",
     "4002": "Wrong password.",
     "4003": "Invalid login credentials",
-    "4004": "User with this email already exists.",
+    "4004": "User with this email/phone already exists.",
     "4005": "User is not verified.",
     "4006": "New password and Confirm password are not same.",
     "4007": "Link Expired.",
