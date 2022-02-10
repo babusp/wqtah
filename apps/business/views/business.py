@@ -1,13 +1,7 @@
 # django imports
-from multiprocessing import context
 from rest_framework import status, serializers, permissions
 from rest_framework.response import Response
-from apps.accounts.models.auth import User
-from apps.business.serializers.amenities import (
-    AmenitySerializer,
-    BusinessProfileAmenitySerilizer,
-)
-
+from apps.business.serializers.amenities import AmenitySerializer, BusinessProfileAmenitySerilizer
 from apps.utility.viewsets import CustomModelPostListViewSet
 from apps.utility.common import CustomResponse
 from apps.business.models.business import BusinessProfile, BusinessProfileAmenities

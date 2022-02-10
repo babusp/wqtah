@@ -27,4 +27,3 @@ class AddAttachmentView(CustomModelViewSet):
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
         ).success_response(data=BusinessProfileAttachmentListSerializer(response).data)
-
