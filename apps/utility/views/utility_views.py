@@ -16,11 +16,13 @@ class FixtureFilter(filters.FilterSet):
     """
     FixtureFilter filter class
     """
+
     type = filters.CharFilter()
 
     class Meta:
         """fixture type metaclass"""
-        fields = ('type', )
+
+        fields = ("type",)
 
 
 class LoadFixturesViewSet(CustomModelListViewSet):
@@ -40,9 +42,9 @@ class LoadFixturesViewSet(CustomModelListViewSet):
         :param kwargs: kwargs
         :return:
         """
-        fixture_type = request.GET.get('type', None)
+        fixture_type = request.GET.get("type", None)
         try:
-            call_command('loaddata', FIXTURES[fixture_type])
+            call_command("loaddata", FIXTURES[fixture_type])
         except (KeyError, TypeError) as exe:
             return HttpResponse(str(exe))
         return HttpResponse("success")

@@ -19,11 +19,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     User Model Class
     """
+
     ROLES = (
-        (cons.ADMIN, 'Admin'),
-        (cons.BUSINESS_OWNER, 'Business Owner'),
-        (cons.END_USER, 'EndUser'),
-        (cons.STAFF_USER, 'StaffUser')
+        (cons.ADMIN, "Admin"),
+        (cons.BUSINESS_OWNER, "Business Owner"),
+        (cons.END_USER, "EndUser"),
+        (cons.STAFF_USER, "StaffUser"),
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, null=True, blank=True)
@@ -41,14 +42,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     forgot_pass_token_created_at = models.DateTimeField(null=True, blank=True)
 
     # otp related fields
-    otp = models.CharField(max_length=10,null=True)
+    otp = models.CharField(max_length=10, null=True)
     otp_verified = models.BooleanField(default=False)
 
     objects = UserManager()
     created_at = models.DateTimeField(auto_now_add=True)
 
     # here username_field is django defined field in account model, used for account identification.
-    USERNAME_FIELD = 'phone_no'
+    USERNAME_FIELD = "phone_no"
 
     # list of the field names that will be prompted for when creating a account via the
     # createsuperuser management command.
@@ -58,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         if not self.id and not self.email:
             self.email = self.email
         super(User, self).save(*args, **kwargs)
-        
+
     def __str__(self):
         return str(self.phone_no)
 
@@ -75,6 +76,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         refresh = RefreshToken.for_user(self)
         return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
         }
