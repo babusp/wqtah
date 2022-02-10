@@ -106,6 +106,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        """ validating phone no """
         user = User.objects.filter(phone_no=attrs["phone_no"]).first()
         if user:
             raise serializers.ValidationError(ERROR_CODE["4004"])
@@ -140,6 +141,13 @@ class SendOtpSerializer(serializers.Serializer):
 
     class Meta:
         fields = ("country_code", "phone_no")
+
+    def validate(self, attrs):
+        """ validating phone no """
+        user = User.objects.filter(phone_no=attrs["phone_no"]).first()
+        if user:
+            raise serializers.ValidationError(ERROR_CODE["4004"])
+        return attrs
 
     def create(self, validated_data):
         """overriding create serializer"""
