@@ -9,6 +9,7 @@ SUCCESS_CODE = {
     "2003": "Password Reset Successfully.",
     "2004": "User logged-out successfully",
     "2005": "OTP send to your mobile number",
+    "2006": "business deleted",
 }
 
 ERROR_CODE = {
@@ -23,8 +24,8 @@ ERROR_CODE = {
     "4008": "Sorry! Your account is not active. We have sent you a verification link to activate your account.",
     "4009": "Invalid OTP.",
     "4010": "Invalid Phone no.",
-    "4011": "Token is expired or invalid",
-    "4012": "Object not found.",
+    "4011": "Object not found.",
+    "4012": "Token is expired or invalid",
 }
 
 SMS_TEMPLATE = {

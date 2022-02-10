@@ -167,8 +167,24 @@ class CustomModelPostViewSet(CreateModelMixin, GenericViewSet):
     pass
 
 
+class CustomModelUpdateViewSet(UpdateModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
+    """
+
+    pass
+
+
+class CustomModelDestroyViewSet(DestroyModelMixin, GenericViewSet):
+    """
+    A view-set that provides default `create()`, and `list()` actions, and provide a unique response format .
+    """
+
+    pass
+
+
 def error_404(description):
-    """ function to return error with status code"""
+    """function to return error with status code"""
     raise ValidationError(description)
 
 
@@ -184,13 +200,11 @@ def get_object_or_404(model, *args, **kwargs):
     try:
         return model.objects.get(*args, **kwargs)
     except model.DoesNotExist:
-        raise error_404(
-            description=ERROR_CODE['4012']
-        )
+        raise error_404(description=ERROR_CODE["4011"])
 
 
 def error_400(description):
-    """ function to return error with status code"""
+    """function to return error with status code"""
     raise ValidationError(description)
 
 

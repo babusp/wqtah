@@ -7,13 +7,14 @@ from rest_framework import status, generics, permissions
 
 # local imports
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-from apps.accounts.models import User
+
 from apps.utility.viewsets import CustomModelPostViewSet, get_object_or_404, CustomModelViewSet
 from apps.accounts.serializers.auth import (
     RegisterSerializer,
     SendOtpSerializer,
     LoginSerializer,
-    LogoutSerializer, UserProfileSerializer
+    LogoutSerializer,
+    UserProfileSerializer,
 )
 from apps.utility.common import CustomResponse
 
@@ -34,7 +35,7 @@ class LoginViewSet(CustomModelPostViewSet):
     serializer_class = LoginSerializer
 
     def create(self, request):
-        """ login create override """
+        """login create override"""
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             return CustomResponse(
@@ -51,13 +52,13 @@ class RegistrationViewSet(CustomModelPostViewSet):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        """ overriding for custom response """
+        """overriding for custom response"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return CustomResponse(
-                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
-            ).success_response(data=serializer.data)
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
 
 
 class SendOTPViewSet(CustomModelPostViewSet):
@@ -76,14 +77,16 @@ class SendOTPViewSet(CustomModelPostViewSet):
 
 
 class ProfileViewSet(CustomModelViewSet):
-    """ ViewSet class for profile """
+    """ViewSet class for profile"""
+
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = User.objects.all()
+
+    queryset = USER.objects.all()
     http_method_names = ('get', 'patch')
 
     def get_queryset(self):
-        """ Return profile related to user only """
+        """Return profile related to user only"""
         queryset = self.queryset
         if self.request.user.id:
             return queryset.filter(id=self.request.user.id)
@@ -93,9 +96,11 @@ class ProfileViewSet(CustomModelViewSet):
         """
         return requested user
         """
+
         user_id = self.kwargs.get('pk')
-        user_obj = get_object_or_404(User, id=user_id)
+        user_obj = get_object_or_404(USER, id=user_id)
         return user_obj
+
 
 class LogoutView(generics.GenericAPIView):
     """User Logout"""
