@@ -15,9 +15,9 @@ from apps.business.choices import LEVEL_CHOICES
 from apps.business.models import Categories, SubCategory, Amenities
 from apps.utility.models import BaseModel, Attachments
 
+USER = get_user_model()
 
-  USER = get_user_model()
-  
+
 class BusinessProfile(BaseModel):
     """Business Profile model class"""
     
