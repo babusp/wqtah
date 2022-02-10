@@ -13,11 +13,11 @@ from apps.accounts.views.auth import (
     ProfileViewSet,
 )
 
-from apps.business.views.business import (
-    AmenityViewSet,
-    BusinessViewSet,
-    BusinessProfileAmenityViewSet,
-)
+# from apps.business.views.business import (
+#     AmenityViewSet,
+#     BusinessViewSet,
+#     BusinessProfileAmenityViewSet,
+# )
 
 
 router = routers.DefaultRouter()
@@ -26,13 +26,13 @@ router.register(r"send-otp", SendOTPViewSet, basename="send_otp")
 router.register(r"signup", RegistrationViewSet, basename="signup")
 router.register(r"login", LoginViewSet, basename="login"),
 router.register(r"profile", ProfileViewSet, basename="login"),
-router.register(r"business", BusinessViewSet, basename="business")
-router.register(r"amenities", AmenityViewSet, basename="amenities")
-router.register(
-    r"business-profile-amenities",
-    BusinessProfileAmenityViewSet,
-    basename="business-profile-amenities",
-)
+# router.register(r"business", BusinessViewSet, basename="business")
+# router.register(r"amenities", AmenityViewSet, basename="amenities")
+# router.register(
+#     r"business-profile-amenities",
+#     BusinessProfileAmenityViewSet,
+#     basename="business-profile-amenities",
+# )
 
 
 # local imports

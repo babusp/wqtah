@@ -5,6 +5,7 @@ from apps.business.models.extras import Amenities
 
 
 class BusinessProfileAmenitySerilizer(serializers.ModelSerializer):
+
     amenities = serializers.StringRelatedField(read_only=True)
 
     class Meta:
