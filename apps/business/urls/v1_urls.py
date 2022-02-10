@@ -24,7 +24,6 @@ router.register(
     basename="business-profile-amenities",
 )
 
-
 # local imports
 
 urlpatterns = []
