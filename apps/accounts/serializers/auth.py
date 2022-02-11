@@ -88,7 +88,10 @@ class UserWithTokenSerializer(UserBasicInfoSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     """used to register the user"""
-    country_code = serializers.CharField(required=True, allow_blank=False, allow_null=False)
+
+    country_code = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False
+    )
     phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
@@ -107,7 +110,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
-        """ validating phone no """
+        """validating phone no"""
         user = User.objects.filter(phone_no=attrs["phone_no"]).first()
         if user:
             raise serializers.ValidationError(ERROR_CODE["4004"])
@@ -137,7 +140,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 class SendOtpSerializer(serializers.Serializer):
     """used to send otp to user phone no"""
 
-    country_code = serializers.CharField(required=True, allow_blank=False, allow_null=False)
+    country_code = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False
+    )
     phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
@@ -147,7 +152,7 @@ class SendOtpSerializer(serializers.Serializer):
         fields = ("country_code", "phone_no")
 
     def validate(self, attrs):
-        """ validating phone no """
+        """validating phone no"""
         user = User.objects.filter(phone_no=attrs["phone_no"]).first()
         if user:
             raise serializers.ValidationError(ERROR_CODE["4004"])
@@ -190,7 +195,7 @@ class LogoutSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """User LogoutSerializer"""
-        self.token = attrs['refresh']
+        self.token = attrs["refresh"]
         return attrs
 
     def save(self, **kwargs):

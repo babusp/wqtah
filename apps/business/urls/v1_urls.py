@@ -1,25 +1,19 @@
 """
 urls file
 """
-
 # third party imports
 from rest_framework import routers
-router = routers.DefaultRouter()
-from apps.business.views.business import (
-    AmenityViewSet,
-    BusinessViewSet,
-    BusinessProfileAmenityViewSet,
-    ServiceViewSet,
-)
+from apps.business.views.extra_views import AmenityViewSet, CategoryViewSet, SubCategoryViewSet, AddAttachmentView
+from apps.business.views.business import BusinessProfileViewSet, ServiceViewSet
 
-router.register(r"business", BusinessViewSet, basename="business")
+router = routers.DefaultRouter()
+
+router.register(r"business", BusinessProfileViewSet, basename="business")
 router.register(r"amenities", AmenityViewSet, basename="amenities")
-router.register(r"service", ServiceViewSet, basename="service"),
-router.register(
-    r"business-profile-amenities",
-    BusinessProfileAmenityViewSet,
-    basename="business-profile-amenities",
-)
+router.register(r"category", CategoryViewSet, basename="category")
+router.register(r"sub-category", SubCategoryViewSet, basename="sub_category")
+router.register(r"service", ServiceViewSet, basename="service")
+router.register(r"business-attachments", AddAttachmentView, basename="attachments")
 
 # local imports
 
