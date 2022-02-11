@@ -2,18 +2,25 @@
 auth views
 """
 # django imports
-from django.contrib.auth import get_user_model, logout
-
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
+from django.contrib.auth import get_user_model
+from rest_framework import status, generics, permissions
 
 # local imports
-from apps.accounts.models import User
-from apps.accounts.serializers.auth import LoginSerializer, RegisterSerializer
-from apps.services.sms_services import send_sms
+from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
 
+from apps.utility.viewsets import (
+    CustomModelPostViewSet,
+    get_object_or_404,
+    CustomModelViewSet,
+)
+from apps.accounts.serializers.auth import (
+    RegisterSerializer,
+    SendOtpSerializer,
+    LoginSerializer,
+    LogoutSerializer,
+    UserProfileSerializer,
+)
+from apps.utility.common import CustomResponse
 
 USER = get_user_model()
 
@@ -21,7 +28,7 @@ USER = get_user_model()
 # Create your views here.
 
 
-class LoginView(APIView):
+class LoginViewSet(CustomModelPostViewSet):
     """
     used to login the user and return the token info
         POST  /login/
@@ -29,73 +36,109 @@ class LoginView(APIView):
         content-type: Application/json
     """
 
-    def post(self, request):
-        phone = request.data.get("phone_no")
-        password = request.data.get("password")
-        try:
-            user = User.objects.get(phone_no=phone)
-        except User.DoesNotExist:
-            return Response({"error": "please check authentication credentils"})
+    serializer_class = LoginSerializer
 
-        # check user is authenticater or not
-        verified = user.check_password(password)
-        if verified:
-            jwt_token = user.get_token()
-            return Response(jwt_token)
-        else:
-            return Response({"error": "please check authentication credentils"})
+    def create(self, request):
+        """login create override"""
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            return CustomResponse(
+                status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
+            ).success_response(data=serializer.data["data"])
+        return CustomResponse(
+            status=status.HTTP_400_BAD_REQUEST, detail=ERROR_CODE["4002"]
+        ).error_message(error=serializer.errors)
 
 
-class RegisterView(APIView):
-    """
-    used to register the user and return the token info
-    POST  /signup/
-        request body: {
-                          "first_name": "string",
-                          "email": "user@example.com",
-                          "password": "string"
-                        }
-        content-type: Application/json
-    """
+class RegistrationViewSet(CustomModelPostViewSet):
+    """View set class to register user"""
+
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2001"]
+        ).success_response(data=serializer.data)
+
+
+class SendOTPViewSet(CustomModelPostViewSet):
+    """View set class to change password"""
+
+    serializer_class = SendOtpSerializer
+
+    def create(self, request, *args, **kwargs):
+        """overriding for custom response"""
+        serialized = self.serializer_class(data=request.data)
+        serialized.is_valid(raise_exception=True)
+        serialized.save()
+        return CustomResponse(
+            status=200, detail=SUCCESS_CODE["2005"]
+        ).success_response()
+
+
+class ProfileViewSet(CustomModelViewSet):
+    """ViewSet class for profile"""
+
+    serializer_class = UserProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    queryset = USER.objects.all()
+    http_method_names = ("get", "patch")
+
+    def get_queryset(self):
+        """Return profile related to user only"""
+        queryset = self.queryset
+        if self.request.user.id:
+            return queryset.filter(id=self.request.user.id)
+        return queryset
+
+    def get_object(self):
+        """
+        return requested user
+        """
+        user_id = self.kwargs.get("pk")
+        user_obj = get_object_or_404(USER, id=user_id)
+        return user_obj
+
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Override  method to pass current request to the serializer
+        :param request:  wsgi request
+        :param args:  list
+        :param kwargs: dict
+        :return: Json Response
+        """
+        instance = self.get_object()
+        serializer = self.serializer_class(
+            instance,
+            data=request.data,
+            partial=True,
+            context={"user": self.request.user},
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2007"]
+        ).success_response(serializer.data)
+
+
+class LogoutView(generics.GenericAPIView):
+    """User Logout"""
+
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     serializer_class = RegisterSerializer
 
     def post(self, request):
-        import random
-
-        phone = request.data.get("phone_no")
-        password = request.data.get("password")
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            # send otp
-            otp = "".join([str(random.randrange(9)) for _ in range(4)])
-            send_sms(phone, otp)
-
-            # new user
-            user = serializer.save()
-            user.set_password(password)
-            user.otp = otp
-            user.save()
-            return Response(
-                {"messsge": "otp send to your mobile number"},
-                status=status.HTTP_201_CREATED,
-            )
-
-
-class VerifyOTPEndpoint(APIView):
-    def post(self, request):
-        phone = request.data.get("phone_no")
-        otp = request.data.get("otp")
-
-        try:
-            user = User.objects.get(phone_no=phone)
-        except User.DoesNotExist:
-            return Response({"error": "please check authentication credentils"})
-
-        # check otp is valid or not
-        if user and user.otp == otp:
-            return Response({"message": "opt verified"}, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {"message": "opt not verified"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        """User Logout validate"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return CustomResponse(
+            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2004"]
+        ).success_response(data=serializer.data)
