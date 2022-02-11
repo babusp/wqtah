@@ -1,9 +1,14 @@
+"""
+serializer file
+"""
 from rest_framework import serializers
-
+# local imports
+from apps.accounts.messages import ERROR_CODE
 from apps.business.models import Amenities
-from apps.business.models.business import BusinessProfile, User
+from apps.business.models.business import BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService
 from apps.business.models.business import BusinessProfileAmenities
-from apps.business.serializers.amenities import BusinessProfileAmenitySerilizer, AmenitySerializer
+from apps.business.serializers.amenities import BusinessProfileAmenitySerilizer
+from apps.utility.viewsets import validation_error
 
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
@@ -26,8 +31,9 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     """ business profile creation """
-    amenities = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="id", many=True)
+    amenities = serializers.SlugRelatedField(queryset=Amenities.objects.all(), slug_field="id", many=True)
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="id")
+    location = serializers.CharField(required=True)
 
     class Meta:
         """ meta class """
@@ -42,7 +48,80 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """ overriding create business profile serializer """
         amenities_li = validated_data.pop('amenities')
-        instance = super(BusinessProfileCreateSerializer).create(validated_data)
+        bus_profile_obj = BusinessProfile.objects.filter(email=validated_data['email'])
+        if bus_profile_obj.exists():
+            raise validation_error(ERROR_CODE['4014'])
+        instance = BusinessProfile.objects.create(**validated_data)
         for amenities in amenities_li:
             BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities=amenities)
         return instance
+
+
+class TimeSlotServiceSerializer(serializers.ModelSerializer):
+    """
+    used to add Categories
+    """
+    class Meta:
+        """
+        Meta class defining TimeSlotService model and including field
+        """
+        model = TimeSlotService
+        fields = ('id', 'start_time', 'end_time', 'price')
+
+
+class ServiceAmenitiesSerializer(serializers.ModelSerializer):
+    """
+    used to add Amenities
+    """
+    class Meta:
+        """
+        Meta class defining ServiceAmenities model and including field
+        """
+        model = ServiceAmenities
+        fields = ('id', 'amenities')
+
+
+class ServiceListSerializer(serializers.ModelSerializer):
+    """
+    used to add services
+    """
+    class Meta:
+        """
+        Meta class defining BusinessService model and including field
+        """
+        model = BusinessService
+        fields = "__all__"
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    """
+    used to add services
+    """
+    timeslot = TimeSlotServiceSerializer(many=True)
+    amenities = ServiceAmenitiesSerializer(many=True)
+
+    class Meta:
+        """
+        Meta class defining BusinessService model and including field
+        """
+        model = BusinessService
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        """override to return user serialized data"""
+        return ServiceListSerializer(instance).data
+
+    def create(self, validated_data):
+        """
+        overriding create
+        """
+        time_data = validated_data.pop('timeslot')
+        amenities_data = validated_data.pop('amenities')
+
+        business = BusinessService.objects.create(**validated_data)
+        for i in time_data:
+            TimeSlotService.objects.create(service=business, start_time=i["start_time"], end_time=i["start_time"],
+                                           price=i["price"])
+        for i in amenities_data:
+            ServiceAmenities.objects.create(service=business, amenities=i["amenities"])
+        return business
