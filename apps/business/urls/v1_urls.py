@@ -12,8 +12,6 @@ from apps.business.views.business import (
     ServiceViewSet,
 )
 
-router = routers.SimpleRouter()
-
 router.register(r"business", BusinessViewSet, basename="business")
 router.register(r"amenities", AmenityViewSet, basename="amenities")
 router.register(r"service", ServiceViewSet, basename="service"),

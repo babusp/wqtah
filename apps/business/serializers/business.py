@@ -36,7 +36,7 @@ class TimeSlotServiceSerializer(serializers.ModelSerializer):
         fields = ('id', 'start_time', 'end_time', 'price')
 
 
-class AmenitiesSerializer(serializers.ModelSerializer):
+class ServiceAmenitiesSerializer(serializers.ModelSerializer):
     """
     used to add Amenities
     """
@@ -65,7 +65,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     used to add services
     """
     timeslot = TimeSlotServiceSerializer(many=True)
-    amenities = AmenitiesSerializer(many=True)
+    amenities = ServiceAmenitiesSerializer(many=True)
 
     class Meta:
         """

@@ -112,7 +112,7 @@ class BusinessProfileAmenityViewSet(CustomModelPostListViewSet):
 
 class ServiceViewSet(CustomModelPostListViewSet):
     """View set class to register user"""
-
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServiceSerializer
 
     def create(self, request, *args, **kwargs):
