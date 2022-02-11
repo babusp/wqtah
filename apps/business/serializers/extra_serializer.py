@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from apps.business.choices import MEDIA_TYPE
-from apps.business.models.business import BusinessProfileMediaMapping
+from apps.business.models.business import BusinessProfileMediaMapping, BusinessProfile
 
 
 class BusinessProfileAttachmentListSerializer(serializers.ModelSerializer):
@@ -16,8 +16,9 @@ class BusinessProfileAttachmentListSerializer(serializers.ModelSerializer):
 class AddBusinessProfileAttachmentSerializer(serializers.ModelSerializer):
     """ AddAttachmentSerializer class for adding attachments to post """
 
-    business_profile = serializers.SlugRelatedField(queryset=BusinessProfileMediaMapping.objects.all(), slug_field='id')
+    business_profile = serializers.SlugRelatedField(queryset=BusinessProfile.objects.all(), slug_field='id')
     file_type = serializers.ChoiceField(choices=MEDIA_TYPE, required=True)
+    file = serializers.FileField(required=True)
 
     class Meta:
         """
