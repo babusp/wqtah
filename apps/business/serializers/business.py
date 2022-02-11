@@ -56,6 +56,15 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
             BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities=amenities)
         return instance
 
+    def update(self, instance, validated_data):
+        """ overriding business profile update serializer """
+        amenities_li = validated_data.pop('amenities', None)
+        if amenities_li:
+            BusinessProfileAmenities.objects.filter(business_profile=instance).delete()
+            for amenities in amenities_li:
+                BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities=amenities)
+        return instance
+
 
 class TimeSlotServiceSerializer(serializers.ModelSerializer):
     """
