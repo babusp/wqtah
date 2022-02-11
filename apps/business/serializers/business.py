@@ -91,5 +91,4 @@ class ServiceSerializer(serializers.ModelSerializer):
                                            price=i["price"])
         for i in amenities_data:
             ServiceAmenities.objects.create(service=business, amenities=i["amenities"])
-
         return business
