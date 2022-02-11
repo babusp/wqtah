@@ -11,6 +11,8 @@ SUCCESS_CODE = {
     "2005": "OTP send to your mobile number",
     "2006": "business deleted",
     "2007": "Profile updated successfully",
+    "2008": "Service save successfully."
+
 }
 
 ERROR_CODE = {
@@ -27,6 +29,8 @@ ERROR_CODE = {
     "4010": "Invalid Phone no.",
     "4011": "Object not found.",
     "4012": "Token is expired or invalid",
+    "4013": "End date must occur after Start date.",
+
 }
 
 SMS_TEMPLATE = {
