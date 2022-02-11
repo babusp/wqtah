@@ -3,13 +3,11 @@ auth serializer file
 """
 # django imports
 from django.contrib.auth import get_user_model
-
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 # local imports
 from apps.accounts.messages import ERROR_CODE
-
 from apps.accounts.models.auth import User
 from apps.services.twilio_services import send_twilio_otp, verify_twilio_otp
 
@@ -94,6 +92,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
+        """
+        Meta class defining user model and including field
+        """
         model = USER
         fields = (
             "first_name",
@@ -140,6 +141,9 @@ class SendOtpSerializer(serializers.Serializer):
     phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
+        """
+        Meta class defining login fields
+        """
         fields = ("country_code", "phone_no")
 
     def validate(self, attrs):
