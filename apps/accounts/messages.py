@@ -11,7 +11,8 @@ SUCCESS_CODE = {
     "2005": "OTP send to your mobile number",
     "2006": "business deleted",
     "2007": "Profile updated successfully",
-    "2008": "Service save successfully."
+    "2008": "Service save successfully.",
+    "2009": "Service update successfully.",
 
 }
 
