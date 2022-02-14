@@ -1,0 +1,82 @@
+[{
+	"model": "business.subcategory",
+	"pk": 1,
+	"fields": {
+		"created_at": "2022-02-10T12:14:24.377Z",
+		"updated_at": "2022-02-10T12:14:24.377Z",
+		"name": "Indoor",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 2,
+	"fields": {
+		"created_at": "2022-02-10T12:14:33.593Z",
+		"updated_at": "2022-02-10T12:14:33.593Z",
+		"name": "Multipurpose courts",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 3,
+	"fields": {
+		"created_at": "2022-02-10T12:14:55.464Z",
+		"updated_at": "2022-02-10T12:14:55.464Z",
+		"name": "Football",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 4,
+	"fields": {
+		"created_at": "2022-02-10T12:15:00.381Z",
+		"updated_at": "2022-02-10T12:15:00.381Z",
+		"name": "Basketball",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 5,
+	"fields": {
+		"created_at": "2022-02-10T12:15:07.045Z",
+		"updated_at": "2022-02-10T12:15:07.045Z",
+		"name": "Volleyball",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 6,
+	"fields": {
+		"created_at": "2022-02-10T12:15:11.447Z",
+		"updated_at": "2022-02-10T12:15:11.447Z",
+		"name": "Handball",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 7,
+	"fields": {
+		"created_at": "2022-02-10T12:15:15.967Z",
+		"updated_at": "2022-02-10T12:15:15.967Z",
+		"name": "Badminton",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 8,
+	"fields": {
+		"created_at": "2022-02-10T12:15:21.523Z",
+		"updated_at": "2022-02-10T12:15:21.523Z",
+		"name": "Padel",
+		"is_active": true
+	}
+}, {
+	"model": "business.subcategory",
+	"pk": 9,
+	"fields": {
+		"created_at": "2022-02-10T12:15:41.364Z",
+		"updated_at": "2022-02-10T12:15:41.364Z",
+		"name": "swimming pool",
+		"is_active": true
+	}
+}]
