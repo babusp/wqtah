@@ -1,7 +1,6 @@
 """
 File to load the fixtures
 """
-from typing_extensions import Self
 from django.core.management import call_command
 from django.http import HttpResponse
 
@@ -30,8 +29,7 @@ class LoadFixturesViewSet(CustomModelListViewSet):
     """
     Questions List ViewSet
     """
-
-    serializer_class = Self
+    serializer_class = None
     permission_classes = (AllowAny,)
     filterset_class = FixtureFilter
     filter_backends = (filters.DjangoFilterBackend,)

@@ -54,6 +54,8 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "django_filters",
     "rest_framework_simplejwt.token_blacklist",
+    "storages",
+    "ckeditor"
 ]
 
 # local apps list
@@ -258,3 +260,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 # define SECURE PROXY SSL HEADER
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Azure S3 setup
+AZURE_STORAGE_NAME = os.getenv("AZURE_STORAGE_NAME")
+AZURE_STORAGE_KEY = os.getenv("AZURE_STORAGE_KEY")
+AZURE_STORAGE_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER")
+
+DEFAULT_FILE_STORAGE = 'apps.utility.storage_backend.CustomFileStorage'
+

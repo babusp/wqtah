@@ -1,8 +1,3 @@
-from apps.accounts.models.auth import User
-from apps.business.choices import LEVEL_CHOICES
-from apps.business.models.extras import Amenities, Categories, SubCategory
-
-
 """ business model """
 # third party import
 from django.db import models
@@ -10,11 +5,11 @@ from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField
 
 # local imports
+
 from apps.accounts.models.auth import User
 from apps.business.choices import LEVEL_CHOICES
-from apps.business.models import Categories, SubCategory, Amenities
+from apps.business.models.extras import Categories, SubCategory, Amenities
 from apps.utility.models import BaseModel, Attachments
-
 
 USER = get_user_model()
 
@@ -39,6 +34,9 @@ class BusinessProfile(BaseModel):
     is_admin_verified = models.BooleanField(default=False)
     amenities = models.JSONField(default=list)
 
+    def __str__(self):
+        return "{}, {}".format(self.email, self.user)
+
 
 class BusinessProfileAmenities(BaseModel):
     """
@@ -48,6 +46,9 @@ class BusinessProfileAmenities(BaseModel):
     amenities = models.ForeignKey(Amenities, on_delete=models.CASCADE)
     business_profile = models.ForeignKey(BusinessProfile, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "{}, Business={}".format(self.amenities, self.business_profile)
 
 
 class BusinessProfileMediaMapping(Attachments):
