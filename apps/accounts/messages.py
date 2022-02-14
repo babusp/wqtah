@@ -13,7 +13,8 @@ SUCCESS_CODE = {
     "2007": "Profile updated successfully",
     "2008": "Service save successfully.",
     "2009": "Business added successfully.",
-    "2010": "Business updated successfully."
+    "2010": "Business updated successfully.",
+
 }
 
 ERROR_CODE = {
