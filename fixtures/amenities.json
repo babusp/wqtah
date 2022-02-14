@@ -5,7 +5,7 @@
 		"created_at": "2022-02-09T07:48:49.867Z",
 		"updated_at": "2022-02-10T13:16:42.729Z",
 		"name": "Wifi",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/wifi.png",
+		"icons": "wifi.png",
 		"is_active": true
 	}
 }, {
@@ -15,7 +15,7 @@
 		"created_at": "2022-02-09T07:48:57.768Z",
 		"updated_at": "2022-02-10T13:18:39.431Z",
 		"name": "Parking",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/parking.png",
+		"icons": "parking.png",
 		"is_active": true
 	}
 }, {
@@ -25,7 +25,7 @@
 		"created_at": "2022-02-09T07:49:06.117Z",
 		"updated_at": "2022-02-10T13:21:51.682Z",
 		"name": "Air Conditioner",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/ac.png",
+		"icons": "ac.png",
 		"is_active": true
 	}
 }, {
@@ -35,7 +35,7 @@
 		"created_at": "2022-02-09T07:49:13.579Z",
 		"updated_at": "2022-02-10T13:19:58.350Z",
 		"name": "Pray Room",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/prayer.png",
+		"icons": "prayer.png",
 		"is_active": true
 	}
 }, {
@@ -45,7 +45,7 @@
 		"created_at": "2022-02-09T07:49:22.198Z",
 		"updated_at": "2022-02-10T13:19:16.501Z",
 		"name": "Restaurant",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/resturants.png",
+		"icons": "resturants.png",
 		"is_active": true
 	}
 }, {
@@ -55,7 +55,7 @@
 		"created_at": "2022-02-09T07:49:29.286Z",
 		"updated_at": "2022-02-10T13:33:41.053Z",
 		"name": "Stadium",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/stadium.png",
+		"icons": "stadium.png",
 		"is_active": true
 	}
 }, {
@@ -65,7 +65,7 @@
 		"created_at": "2022-02-09T07:49:38.005Z",
 		"updated_at": "2022-02-10T13:35:39.122Z",
 		"name": "Microwave",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/micrwave.png",
+		"icons": "micrwave.png",
 		"is_active": true
 	}
 }, {
@@ -75,7 +75,7 @@
 		"created_at": "2022-02-09T07:49:46.237Z",
 		"updated_at": "2022-02-10T16:07:06.591Z",
 		"name": "laundry",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/laundry.png",
+		"icons": "laundry.png",
 		"is_active": true
 	}
 }, {
@@ -85,7 +85,7 @@
 		"created_at": "2022-02-09T07:49:52.913Z",
 		"updated_at": "2022-02-10T13:32:54.044Z",
 		"name": "Gym",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/gym.png",
+		"icons": "gym.png",
 		"is_active": true
 	}
 }, {
@@ -95,7 +95,7 @@
 		"created_at": "2022-02-09T07:50:04.551Z",
 		"updated_at": "2022-02-10T16:07:21.587Z",
 		"name": "Beach Front",
-		"icons": "https://wqtahdevbackend.blob.core.windows.net/wqtah-dev/beach_front.png",
+		"icons": "beach_front.png",
 		"is_active": true
 	}
 }]
