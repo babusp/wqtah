@@ -64,7 +64,6 @@ class ServiceViewSet(CustomModelViewSet):
     """View set class to register user"""
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServiceSerializer
-    ser = ServiceListSerializer
     queryset = BusinessService.objects.all()
     http_method_names = ('post', 'get', 'patch')
 
