@@ -1,16 +1,10 @@
 # django imports
-from rest_framework import status, serializers, permissions
-from rest_framework.response import Response
-from apps.business.serializers.amenities import AmenitySerializer, BusinessProfileAmenitySerilizer
-from apps.utility.viewsets import CustomModelPostListViewSet, CustomModelViewSet
-from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile, BusinessProfileAmenities, BusinessService, TimeSlotService
-from apps.business.serializers import ServiceSerializer, ServiceListSerializer
 from rest_framework import status, permissions
-from apps.utility.viewsets import CustomModelPostListViewSet, CustomModelViewSet
+from apps.utility.viewsets import CustomModelViewSet
 from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile
-from apps.business.serializers import BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer
+from apps.business.models.business import BusinessProfile, BusinessService
+from apps.business.serializers import (BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer,
+                                       ServiceListSerializer)
 from apps.accounts.messages import SUCCESS_CODE
 
 # local imports
