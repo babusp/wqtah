@@ -4,10 +4,13 @@ serializer file
 from rest_framework import serializers
 # local imports
 from apps.accounts.messages import ERROR_CODE
+from apps.business.constants import BUSINESS
 from apps.business.models import Amenities
-from apps.business.models.business import BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService
+from apps.business.models.business import (BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService,
+                                           BusinessProfileMediaMapping)
 from apps.business.models.business import BusinessProfileAmenities
-from apps.business.serializers.amenities import BusinessProfileAmenitySerilizer
+from apps.business.serializers.amenities import AmenitySerializer
+from apps.business.serializers.extra_serializer import BusinessProfileAttachmentListSerializer
 from apps.utility.viewsets import validation_error
 
 
@@ -16,6 +19,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
     amenities = serializers.SerializerMethodField(
         method_name="get_amenities", read_only=True
     )
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         """ meta class """
@@ -24,14 +28,22 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
     def get_amenities(self, obj):
         """ get amenities """
-        qs = BusinessProfileAmenities.objects.filter(business_profile=obj)
-        serializer = BusinessProfileAmenitySerilizer(qs, many=True)
+        qs = Amenities.objects.filter(id__in =obj.businessprofileamenities_set.all().values_list('amenities', flat=True)
+                                      )
+        serializer = AmenitySerializer(qs, many=True)
+        return serializer.data
+
+    def get_attachments(self, obj):
+        """ get attachments """
+        qs = BusinessProfileMediaMapping.objects.filter(
+            id__in=obj.businessprofilemediamapping_set.all())
+        serializer = BusinessProfileAttachmentListSerializer(qs, many=True)
         return serializer.data
 
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     """ business profile creation """
-    amenities = serializers.SlugRelatedField(queryset=Amenities.objects.all(), slug_field="id", many=True)
+    amenities = serializers.ListField(write_only=True)
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="id")
     location = serializers.CharField(required=True)
 
@@ -48,12 +60,15 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """ overriding create business profile serializer """
         amenities_li = validated_data.pop('amenities')
+        if amenities_li:
+            amenities_li = amenities_li[0].split(",")
         bus_profile_obj = BusinessProfile.objects.filter(email=validated_data['email'])
         if bus_profile_obj.exists():
             raise validation_error(ERROR_CODE['4014'])
+        validated_data.update({"level": BUSINESS})
         instance = BusinessProfile.objects.create(**validated_data)
         for amenities in amenities_li:
-            BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities=amenities)
+            BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities_id=amenities)
         return instance
 
     def update(self, instance, validated_data):
@@ -72,7 +87,7 @@ class TimeSlotServiceSerializer(serializers.ModelSerializer):
     """
     class Meta:
         """
-        Meta class defining TimeSlotService model and including field
+        Metaclass defining TimeSlotService model and including field
         """
         model = TimeSlotService
         fields = ('id', 'start_time', 'end_time', 'price')
@@ -96,7 +111,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
     """
     class Meta:
         """
-        Meta class defining BusinessService model and including field
+        Metaclass defining BusinessService model and including field
         """
         model = BusinessService
         fields = "__all__"
@@ -111,7 +126,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class defining BusinessService model and including field
+        Metaclass defining BusinessService model and including field
         """
         model = BusinessService
         fields = "__all__"

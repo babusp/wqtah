@@ -132,8 +132,6 @@ class LogoutView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    serializer_class = RegisterSerializer
-
     def post(self, request):
         """User Logout validate"""
         serializer = self.get_serializer(data=request.data)

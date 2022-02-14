@@ -13,7 +13,9 @@ SUCCESS_CODE = {
     "2007": "Profile updated successfully",
     "2008": "Service save successfully.",
     "2009": "Business added successfully.",
-    "2010": "Business updated successfully."
+    "2010": "Business updated successfully.",
+    "2011": "Business Attachment deleted successfully.",
+    "2012": "Service Attachment deleted successfully."
 }
 
 ERROR_CODE = {
