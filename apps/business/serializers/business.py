@@ -7,10 +7,11 @@ from apps.accounts.messages import ERROR_CODE
 from apps.business.constants import BUSINESS
 from apps.business.models import Amenities
 from apps.business.models.business import (BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService,
-                                           BusinessProfileMediaMapping)
+                                           BusinessProfileMediaMapping, ServiceMediaMapping)
 from apps.business.models.business import BusinessProfileAmenities
 from apps.business.serializers.amenities import AmenitySerializer
-from apps.business.serializers.extra_serializer import BusinessProfileAttachmentListSerializer
+from apps.business.serializers.extra_serializer import (BusinessProfileAttachmentListSerializer,
+                                                        ServiceAttachmentListSerializer)
 from apps.utility.viewsets import validation_error
 
 
@@ -83,7 +84,7 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
 
 class TimeSlotServiceSerializer(serializers.ModelSerializer):
     """
-    used to add Categories
+    used to add time slot
     """
     class Meta:
         """
@@ -107,14 +108,45 @@ class ServiceAmenitiesSerializer(serializers.ModelSerializer):
 
 class ServiceListSerializer(serializers.ModelSerializer):
     """
-    used to add services
+    used to services list
     """
+    amenities = serializers.SerializerMethodField(
+        method_name="get_amenities", read_only=True
+    )
+    timeslot = serializers.SerializerMethodField(
+        method_name="get_timeslot", read_only=True
+    )
+    attachments = serializers.SerializerMethodField()
+
+    def get_attachments(self, obj):
+        """ get attachments """
+        qs = ServiceMediaMapping.objects.filter(
+            id__in=obj.servicemediamapping_set.all())
+        serializer = ServiceAttachmentListSerializer(qs, many=True)
+        return serializer.data
+
     class Meta:
         """
         Metaclass defining BusinessService model and including field
         """
         model = BusinessService
         fields = "__all__"
+
+    def get_timeslot(self, obj):
+        """
+        used to time slot list
+        """
+        time_slot = TimeSlotService.objects.filter(service=obj)
+        serializer = TimeSlotServiceSerializer(time_slot, many=True)
+        return serializer.data
+
+    def get_amenities(self, obj):
+        """
+        used to amenities list
+        """
+        amenities = ServiceAmenities.objects.filter(service=obj)
+        serializer = ServiceAmenitiesSerializer(amenities, many=True)
+        return serializer.data
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -148,4 +180,5 @@ class ServiceSerializer(serializers.ModelSerializer):
                                            price=i["price"])
         for i in amenities_data:
             ServiceAmenities.objects.create(service=business, amenities=i["amenities"])
+
         return business

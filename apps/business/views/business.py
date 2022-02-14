@@ -1,9 +1,10 @@
 # django imports
 from rest_framework import status, permissions
-from apps.utility.viewsets import CustomModelPostListViewSet, CustomModelViewSet
+from apps.utility.viewsets import CustomModelViewSet
 from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile
-from apps.business.serializers import BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer
+from apps.business.models.business import BusinessProfile, BusinessService
+from apps.business.serializers import (BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer,
+                                       ServiceListSerializer)
 from apps.accounts.messages import SUCCESS_CODE
 
 # local imports
@@ -53,14 +54,24 @@ class BusinessProfileViewSet(CustomModelViewSet):
         ).success_response(data=serializer.data)
 
 
-class ServiceViewSet(CustomModelPostListViewSet):
+class ServiceViewSet(CustomModelViewSet):
     """View set class to register user"""
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServiceSerializer
+    queryset = BusinessService.objects.all()
+    http_method_names = ('post', 'get', 'patch')
+
+    def get_serializer_class(self):
+        """ overriding serializer class for dynamic serializer according to request """
+        if self.request.method == 'POST' or self.request.method == 'PATCH':
+            return ServiceSerializer
+        return ServiceListSerializer
 
     def create(self, request, *args, **kwargs):
         """overriding for custom response"""
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()(
+            data=request.data, context={"user": request.user}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return CustomResponse(
