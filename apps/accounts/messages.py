@@ -33,6 +33,7 @@ ERROR_CODE = {
     "4012": "Token is expired or invalid",
     "4013": "End date must occur after Start date.",
     "4014": "Business with this email id already exists",
+    "4015": "Business Profile already exists",
 
 }
 
