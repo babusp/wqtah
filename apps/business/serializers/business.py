@@ -3,8 +3,9 @@ serializer file
 """
 from rest_framework import serializers
 # local imports
+from apps.accounts.constants import BUSINESS_OWNER
 from apps.accounts.messages import ERROR_CODE
-from apps.business.constants import BUSINESS
+from apps.business.constants import COMPANY_DETAIL, COMPANY_POLICY, COMPLETED
 from apps.business.models import Amenities
 from apps.business.models.business import (BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService,
                                            BusinessProfileMediaMapping, ServiceMediaMapping)
@@ -52,11 +53,20 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         """ meta class """
         model = BusinessProfile
         fields = ("amenities", "user", "title", "email", "location", "lat", "lng", "description", "level",
-                  "company_name", "company_email", "license", "company_phone", "company_policies", "identity_proof")
+                  "company_name", "company_email", "license", "company_phone", "is_company_policies_verified",
+                  "company_country_code", "identity_proof", 'identity_file_name')
 
     def to_representation(self, instance):
         """override to return user serialized data"""
         return BusinessProfileSerializer(instance).data
+
+    def validate(self, attrs):
+        """ validating user """
+        if 'user' in attrs:
+            bus_profile_obj = BusinessProfile.objects.filter(user=attrs['user'])
+            if bus_profile_obj.exists():
+                raise validation_error(ERROR_CODE['4015'])
+        return attrs
 
     def create(self, validated_data):
         """ overriding create business profile serializer """
@@ -66,7 +76,7 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         bus_profile_obj = BusinessProfile.objects.filter(email=validated_data['email'])
         if bus_profile_obj.exists():
             raise validation_error(ERROR_CODE['4014'])
-        validated_data.update({"level": BUSINESS})
+        validated_data.update({"level": COMPANY_DETAIL})
         instance = BusinessProfile.objects.create(**validated_data)
         for amenities in amenities_li:
             BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities_id=amenities)
@@ -75,6 +85,12 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """ overriding business profile update serializer """
         amenities_li = validated_data.pop('amenities', None)
+        if 'company_email' in validated_data:
+            validated_data.update({"level": COMPANY_POLICY})
+        if 'is_company_policies_verified' in validated_data:
+            validated_data.update({"level": COMPLETED, "is_admin_verified": True, "user__role": BUSINESS_OWNER})
+        instance.__dict__.update(**validated_data)
+        instance.save()
         if amenities_li:
             BusinessProfileAmenities.objects.filter(business_profile=instance).delete()
             for amenities in amenities_li:
