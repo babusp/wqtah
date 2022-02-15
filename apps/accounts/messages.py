@@ -35,6 +35,7 @@ ERROR_CODE = {
     "4013": "End date must occur after Start date.",
     "4014": "Business with this email id already exists",
     "4015": "Business Profile already exists",
+    "4016": "Invalid Input",
 
 }
 

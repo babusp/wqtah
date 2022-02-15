@@ -116,6 +116,10 @@ class ProfileViewSet(CustomModelViewSet):
         :param kwargs: dict
         :return: Json Response
         """
+        if not request.data:
+            return CustomResponse(
+                status=status.HTTP_200_OK, detail=ERROR_CODE['4016']
+            ).error_message(ERROR_CODE['4016'])
         instance = self.get_object()
         serializer = self.serializer_class(
             instance,

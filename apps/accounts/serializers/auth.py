@@ -184,12 +184,10 @@ class SendOtpSerializer(serializers.Serializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Base class for user profile"""
-
     class Meta:
         """
         Meta class defining user model and including field
         """
-
         model = User
         fields = [
             "id",
@@ -199,6 +197,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "country_code",
             "phone_no",
         ]
+        extra_kwargs = {'first_name': {"allow_blank": False},
+                        'last_name': {"allow_blank": False},
+                        'email': {"allow_blank": False, "required": True},
+                        'phone_no': {"allow_blank": False},
+                        'country_code': {"allow_blank": False}}
 
 
 class LogoutSerializer(serializers.Serializer):
