@@ -23,6 +23,7 @@ from apps.accounts.serializers.auth import (
     UserProfileSerializer,
     UpdatePasswordSerializer,
     ForgotSendOtpSerializer,
+    ForgotPasswordSerializer,
 )
 from apps.utility.common import CustomResponse, Response
 
@@ -161,11 +162,6 @@ class ForgotSendOTPViewSet(CustomModelPostViewSet):
 
     serializer_class = ForgotSendOtpSerializer
 
-    def create(self, request, *args, **kwargs):
-        """overriding for custom response"""
-        serialized = self.serializer_class(data=request.data)
-        serialized.is_valid(raise_exception=True)
-        serialized.save()
-        return CustomResponse(
-            status=200, detail=SUCCESS_CODE["2005"]
-        ).success_response()
+
+class ForgotPasswordViewSet(CustomModelPostViewSet):
+    serializer_class = ForgotPasswordSerializer

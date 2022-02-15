@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
 from apps.accounts.models.auth import User
 from apps.services.twilio_services import send_twilio_otp, verify_twilio_otp
+from apps.services.sendgrid import password_updated_email
 
 USER = get_user_model()
 
@@ -239,13 +240,7 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
             # updating new password
             instance.set_password(new_password)
             instance.save()
-            send_mail(
-                "PASSWORD UPDATED",
-                "password changed successfully",
-                "psobhan777@gmail.com",
-                [instance.email],
-                fail_silently=False,
-            )
+            password_updated_email(instance.email)
             return instance
         else:
             raise serializers.ValidationError(
@@ -257,23 +252,30 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
 
 
 class ForgotPasswordSerializer(serializers.ModelSerializer):
-
-    phone = serializers.CharField(write_only=True, required=True)
-    otp = serializers.CharField(write_only=True, required=True)
+    country_code = serializers.CharField(write_only=True, required=True)
+    phone_no = serializers.CharField(write_only=True, required=True)
+    otp = serializers.IntegerField(write_only=True, required=True)
     new_password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ("otp", "new_password", "confirm_password")
+        fields = (
+            "country_code",
+            "phone_no",
+            "otp",
+            "new_password",
+            "confirm_password",
+        )
 
-    # def to_representation(self, instance):
-    #     """override to return user serialized data"""
-    #     return UserWithTokenSerializer(instance).data
+    def to_representation(self, instance):
+        """override to return user response"""
+        return {"message": "password updated successfully"}
 
-    def create(self, attrs, validated_data):
+    def create(self, validated_data):
         """overriding create"""
-        user = User.objects.filter(phone_no=attrs["phone_no"]).first()
+        user = User.objects.filter(phone_no=validated_data["phone_no"]).first()
+
         if user:
             try:
                 response = verify_twilio_otp(
@@ -286,19 +288,15 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
                     confirm_password = validated_data.get("confirm_password")
                     if new_password == confirm_password:
                         # updating new password
-                        instance.save()
-                        instance.otp_verified = True
-                    send_mail(
-                        "PASSWORD UPDATED",
-                        "password changed successfully",
-                        "psobhan777@gmail.com",
-                        [instance.email],
-                        fail_silently=False,
-                    )
-                    return instance
-
-            except Exception:
-                raise serializers.ValidationError(ERROR_CODE["4009"])
+                        user.set_password(new_password)
+                        user.otp_verified = True
+                        user.save()
+                        password_updated_email(user.email)
+                        return user
+                else:
+                    raise serializers.ValidationError(ERROR_CODE["4009"])
+            except Exception as e:
+                raise serializers.ValidationError(str(e))
         else:
             raise serializers.ValidationError(ERROR_CODE["4001"])
 
@@ -306,51 +304,29 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
 class ForgotSendOtpSerializer(serializers.Serializer):
     """used to send otp to user phone no"""
 
+    country_code = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False
+    )
+    phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
-otp = serializers.CharField(write_only=True, required=True)
-new_password = serializers.CharField(write_only=True, required=True)
-confirm_password = serializers.CharField(write_only=True, required=True)
+    class Meta:
+        """
+        Meta class defining login fields
+        """
 
+        fields = ("country_code", "phone_no")
 
-class Meta:
-    model = User
-    fields = ("otp", "new_password", "confirm_password")
+    def create(self, validated_data):
+        """validating phone no"""
 
-
-# def to_representation(self, instance):
-#     """override to return user serialized data"""
-#     return UserWithTokenSerializer(instance).data
-
-
-def create(self, attrs, validated_data):
-    """overriding create"""
-    user = User.objects.filter(phone_no=attrs["phone_no"]).first()
-    if user:
-        try:
-            response = verify_twilio_otp(
-                validated_data["country_code"],
-                validated_data["phone_no"],
-                validated_data["otp"],
-            )
-            if response == "approved":
-                instance = User.objects.create_user(**validated_data)
-                instance.otp_verified = True
-                new_password = validated_data.get("new_password")
-                confirm_password = validated_data.get("confirm_password")
-
-                if new_password == confirm_password:
-                    # updating new password
-                    instance.set_password(new_password).save()
-                send_mail(
-                    "PASSWORD UPDATED",
-                    "password changed successfully",
-                    "psobhan777@gmail.com",
-                    [instance.email],
-                    fail_silently=False,
+        user = User.objects.filter(phone_no=validated_data["phone_no"]).first()
+        if user:
+            try:
+                send_twilio_otp(
+                    validated_data["country_code"],
+                    validated_data["phone_no"],
+                    "sms",
                 )
-                return instance
-
-        except Exception:
-            raise serializers.ValidationError(ERROR_CODE["4009"])
-    else:
-        raise serializers.ValidationError(ERROR_CODE["4001"])
+            except Exception:
+                raise serializers.ValidationError(ERROR_CODE["4001"])
+            return validated_data

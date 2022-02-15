@@ -14,7 +14,6 @@ SUCCESS_CODE = {
     "2008": "Service save successfully.",
     "2009": "Business added successfully.",
     "2010": "Business updated successfully.",
-
 }
 
 ERROR_CODE = {
@@ -32,7 +31,6 @@ ERROR_CODE = {
     "4012": "Token is expired or invalid",
     "4013": "End date must occur after Start date.",
     "4014": "Business with this email id already exists",
-
 }
 
 SMS_TEMPLATE = {
