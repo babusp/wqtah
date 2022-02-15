@@ -1,12 +1,15 @@
 """
 serializer file
 """
+
 from rest_framework import serializers
+
 # local imports
 from apps.accounts.constants import BUSINESS_OWNER
 from apps.accounts.messages import ERROR_CODE
 from apps.business.constants import COMPANY_DETAIL, COMPANY_POLICY, COMPLETED
 from apps.business.models import Amenities
+
 from apps.business.models.business import (BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService,
                                            BusinessProfileMediaMapping, ServiceMediaMapping)
 from apps.business.models.business import BusinessProfileAmenities
@@ -17,14 +20,16 @@ from apps.utility.viewsets import validation_error
 
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
-    """ business profile list serializer """
+    """business profile list serializer"""
+
     amenities = serializers.SerializerMethodField(
         method_name="get_amenities", read_only=True
     )
     attachments = serializers.SerializerMethodField()
 
     class Meta:
-        """ meta class """
+        """meta class"""
+
         model = BusinessProfile
         fields = "__all__"
 
@@ -44,14 +49,17 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
+
     """ business profile creation """
     amenities = serializers.ListField(write_only=True)
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="id")
     location = serializers.CharField(required=True)
 
     class Meta:
-        """ meta class """
+        """meta class"""
+
         model = BusinessProfile
+
         fields = ("amenities", "user", "title", "email", "location", "lat", "lng", "description", "level",
                   "company_name", "company_email", "license", "company_phone", "is_company_policies_verified",
                   "company_country_code", "identity_proof", 'identity_file_name')
@@ -69,6 +77,7 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+
         """ overriding create business profile serializer """
         amenities_li = validated_data.pop('amenities')
         if amenities_li:
@@ -94,7 +103,9 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         if amenities_li:
             BusinessProfileAmenities.objects.filter(business_profile=instance).delete()
             for amenities in amenities_li:
-                BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities=amenities)
+                BusinessProfileAmenities.objects.update_or_create(
+                    business_profile=instance, amenities=amenities
+                )
         return instance
 
 
@@ -102,30 +113,35 @@ class TimeSlotServiceSerializer(serializers.ModelSerializer):
     """
     used to add time slot
     """
+
     class Meta:
         """
         Metaclass defining TimeSlotService model and including field
         """
+
         model = TimeSlotService
-        fields = ('id', 'start_time', 'end_time', 'price')
+        fields = ("id", "start_time", "end_time", "price")
 
 
 class ServiceAmenitiesSerializer(serializers.ModelSerializer):
     """
     used to add Amenities
     """
+
     class Meta:
         """
         Meta class defining ServiceAmenities model and including field
         """
+
         model = ServiceAmenities
-        fields = ('id', 'amenities')
+        fields = ("id", "amenities")
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
     """
     used to services list
     """
+
     amenities = serializers.SerializerMethodField(
         method_name="get_amenities", read_only=True
     )
@@ -145,6 +161,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
         """
         Metaclass defining BusinessService model and including field
         """
+
         model = BusinessService
         fields = "__all__"
 
@@ -169,6 +186,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     """
     used to add services
     """
+
     timeslot = TimeSlotServiceSerializer(many=True)
     amenities = ServiceAmenitiesSerializer(many=True)
 
@@ -176,6 +194,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         """
         Metaclass defining BusinessService model and including field
         """
+
         model = BusinessService
         fields = "__all__"
 
@@ -187,13 +206,17 @@ class ServiceSerializer(serializers.ModelSerializer):
         """
         overriding create
         """
-        time_data = validated_data.pop('timeslot')
-        amenities_data = validated_data.pop('amenities')
+        time_data = validated_data.pop("timeslot")
+        amenities_data = validated_data.pop("amenities")
 
         business = BusinessService.objects.create(**validated_data)
         for i in time_data:
-            TimeSlotService.objects.create(service=business, start_time=i["start_time"], end_time=i["start_time"],
-                                           price=i["price"])
+            TimeSlotService.objects.create(
+                service=business,
+                start_time=i["start_time"],
+                end_time=i["start_time"],
+                price=i["price"],
+            )
         for i in amenities_data:
             ServiceAmenities.objects.create(service=business, amenities=i["amenities"])
 

@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField
+
 # local imports
 
 from apps.accounts.models.auth import User
@@ -15,6 +16,7 @@ USER = get_user_model()
 
 class BusinessProfile(BaseModel):
     """Business Profile model class"""
+
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     email = models.EmailField(max_length=256)

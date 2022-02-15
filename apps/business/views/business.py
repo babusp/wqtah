@@ -1,9 +1,12 @@
 # django imports
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 from rest_framework import status, permissions
 from apps.utility.viewsets import CustomModelViewSet
+from apps.business.models.business import (
+    BusinessProfile,
+    BusinessService,
+)
 from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile, BusinessService
 from apps.business.serializers import (BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer,
                                        ServiceListSerializer)
 from apps.accounts.messages import SUCCESS_CODE
@@ -12,15 +15,16 @@ from apps.accounts.messages import SUCCESS_CODE
 
 
 class BusinessProfileViewSet(CustomModelViewSet):
-    """View set class for business profile """
+    """View set class for business profile"""
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = BusinessProfileSerializer
     queryset = BusinessProfile.objects.all()
-    http_method_names = ('post', 'get', 'patch')
+    http_method_names = ("post", "get", "patch")
 
     def get_serializer_class(self):
-        """ overriding serializer class for dynamic serializer according to request """
-        if self.request.method == 'POST' or self.request.method == 'PATCH':
+        """overriding serializer class for dynamic serializer according to request"""
+        if self.request.method == "POST" or self.request.method == "PATCH":
             return BusinessProfileCreateSerializer
         return BusinessProfileSerializer
 
@@ -33,13 +37,6 @@ class BusinessProfileViewSet(CustomModelViewSet):
         serializer.save()
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2009"]
-        ).success_response(data=serializer.data)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset
-        serializer = self.serializer_class(queryset, many=True)
-        return CustomResponse(
-            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
         ).success_response(data=serializer.data)
 
     def partial_update(self, request, *args, **kwargs):
@@ -56,17 +53,17 @@ class BusinessProfileViewSet(CustomModelViewSet):
 
 
 class ServiceViewSet(CustomModelViewSet):
-    """View set class to register user"""
+    """View set class to Business service"""
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServiceListSerializer
     queryset = BusinessService.objects.all()
     http_method_names = ('post', 'get', 'patch')
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ['category']
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('category',)
 
     def get_serializer_class(self):
-        """ overriding serializer class for dynamic serializer according to request """
-        if self.request.method == 'POST' or self.request.method == 'PATCH':
+        """overriding serializer class for dynamic serializer according to request"""
+        if self.request.method == "POST" or self.request.method == "PATCH":
             return ServiceSerializer
         return ServiceListSerializer
 
@@ -79,12 +76,4 @@ class ServiceViewSet(CustomModelViewSet):
         serializer.save()
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2008"]
-        ).success_response(data=serializer.data)
-
-    def list(self, request, *args, **kwargs):
-        """overriding for custom response"""
-        queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
-        return CustomResponse(
-            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
         ).success_response(data=serializer.data)

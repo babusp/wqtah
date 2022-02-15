@@ -1,13 +1,10 @@
 """
 custom pagination controllers
 """
-import math
 # third-party import
 from collections import OrderedDict
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.conf import settings
 
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):

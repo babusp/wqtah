@@ -163,6 +163,7 @@ REST_FRAMEWORK = {
         "rest_framework_swagger.renderers.SwaggerUIRenderer",
         "rest_framework_swagger.renderers.OpenAPIRenderer",
     ),
+    "PAGE_SIZE": 10,
     'DEFAULT_PAGINATION_CLASS': 'apps.utility.pagination.CustomLimitOffsetPagination',
     # filter backend
     'DEFAULT_FILTER_BACKENDS': (
@@ -255,8 +256,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 AZURE_STORAGE_NAME = os.getenv("AZURE_STORAGE_NAME")
 AZURE_STORAGE_KEY = os.getenv("AZURE_STORAGE_KEY")
 AZURE_STORAGE_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER")
-
-DEFAULT_FILE_STORAGE = 'apps.utility.storage_backend.CustomFileStorage'
+DEFAULT_FILE_STORAGE = "apps.utility.storage_backend.CustomFileStorage"
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -274,3 +274,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# sendgrid config
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

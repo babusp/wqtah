@@ -4,13 +4,14 @@ auth views
 # django imports
 from django.contrib.auth import get_user_model
 from rest_framework import status, generics, permissions
+from apps.accounts.models.auth import User
 
 # local imports
 from apps.accounts.messages import SUCCESS_CODE, ERROR_CODE
-
 from apps.utility.viewsets import (
     CustomModelPostViewSet,
     get_object_or_404,
+    CustomModelUpdateViewSet,
     CustomModelViewSet,
 )
 from apps.accounts.serializers.auth import (
@@ -19,6 +20,9 @@ from apps.accounts.serializers.auth import (
     LoginSerializer,
     LogoutSerializer,
     UserProfileSerializer,
+    UpdatePasswordSerializer,
+    ForgotSendOtpSerializer,
+    ForgotPasswordSerializer,
 )
 from apps.utility.common import CustomResponse
 
@@ -140,3 +144,21 @@ class LogoutView(generics.GenericAPIView):
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2004"]
         ).success_response(data=serializer.data)
+
+
+class UpdatePasswordViewSet(CustomModelUpdateViewSet):
+    """ViewSet class for profile"""
+
+    serializer_class = UpdatePasswordSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = User.objects.all()
+
+
+class ForgotSendOTPViewSet(CustomModelPostViewSet):
+    """View set class to send otp to when forgot password"""
+
+    serializer_class = ForgotSendOtpSerializer
+
+
+class ForgotPasswordViewSet(CustomModelPostViewSet):
+    serializer_class = ForgotPasswordSerializer

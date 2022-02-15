@@ -16,6 +16,7 @@ SUCCESS_CODE = {
     "2010": "Business updated successfully.",
     "2011": "Business Attachment deleted successfully.",
     "2012": "Service Attachment deleted successfully."
+
 }
 
 ERROR_CODE = {
