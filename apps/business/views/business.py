@@ -1,8 +1,21 @@
 # django imports
-from rest_framework import status, permissions
-from apps.utility.viewsets import CustomModelViewSet
+
+
+from apps.business.serializers.amenities import (
+    AmenitySerializer,
+    BusinessProfileAmenitySerilizer,
+)
+from apps.utility.viewsets import CustomModelPostListViewSet, CustomModelViewSet
+from apps.business.models.business import (
+    BusinessProfile,
+    BusinessProfileAmenities,
+    BusinessService,
+    TimeSlotService,
+)
+from apps.business.serializers import ServiceSerializer, ServiceListSerializer
+from rest_framework import status, permissions,serializers
+from rest_framework.response import Response
 from apps.utility.common import CustomResponse
-from apps.business.models.business import BusinessProfile, BusinessService
 from apps.business.serializers import (BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer,
                                        ServiceListSerializer)
 from apps.accounts.messages import SUCCESS_CODE
@@ -11,15 +24,16 @@ from apps.accounts.messages import SUCCESS_CODE
 
 
 class BusinessProfileViewSet(CustomModelViewSet):
-    """View set class for business profile """
+    """View set class for business profile"""
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = BusinessProfileSerializer
     queryset = BusinessProfile.objects.all()
-    http_method_names = ('post', 'get', 'patch')
+    http_method_names = ("post", "get", "patch")
 
     def get_serializer_class(self):
-        """ overriding serializer class for dynamic serializer according to request """
-        if self.request.method == 'POST' or self.request.method == 'PATCH':
+        """overriding serializer class for dynamic serializer according to request"""
+        if self.request.method == "POST" or self.request.method == "PATCH":
             return BusinessProfileCreateSerializer
         return BusinessProfileSerializer
 
@@ -35,6 +49,7 @@ class BusinessProfileViewSet(CustomModelViewSet):
         ).success_response(data=serializer.data)
 
     def list(self, request, *args, **kwargs):
+        self.serializer_class = BusinessGetsSerializer
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
         return CustomResponse(
@@ -56,14 +71,15 @@ class BusinessProfileViewSet(CustomModelViewSet):
 
 class ServiceViewSet(CustomModelViewSet):
     """View set class to register user"""
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ServiceSerializer
     queryset = BusinessService.objects.all()
-    http_method_names = ('post', 'get', 'patch')
+    http_method_names = ("post", "get", "patch")
 
     def get_serializer_class(self):
-        """ overriding serializer class for dynamic serializer according to request """
-        if self.request.method == 'POST' or self.request.method == 'PATCH':
+        """overriding serializer class for dynamic serializer according to request"""
+        if self.request.method == "POST" or self.request.method == "PATCH":
             return ServiceSerializer
         return ServiceListSerializer
 
