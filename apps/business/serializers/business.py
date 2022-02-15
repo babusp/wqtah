@@ -34,7 +34,6 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_amenities(self, obj):
-      
         """ get amenities """
         qs = Amenities.objects.filter(id__in =obj.businessprofileamenities_set.all().values_list('amenities', flat=True)
                                       )

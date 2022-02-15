@@ -6,7 +6,6 @@ urls file
 from rest_framework import routers
 from django.urls import path
 from apps.accounts.views.auth import (
-    ForgotSendOTPViewSet,
     LoginViewSet,
     SendOTPViewSet,
     RegistrationViewSet,

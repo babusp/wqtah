@@ -1,20 +1,11 @@
 # django imports
-
-
-from apps.business.serializers.amenities import (
-    AmenitySerializer,
-    BusinessProfileAmenitySerilizer,
-)
-from apps.utility.viewsets import CustomModelPostListViewSet, CustomModelViewSet
+from django_filters import rest_framework as filters
+from rest_framework import status, permissions
+from apps.utility.viewsets import CustomModelViewSet
 from apps.business.models.business import (
     BusinessProfile,
-    BusinessProfileAmenities,
     BusinessService,
-    TimeSlotService,
 )
-from apps.business.serializers import ServiceSerializer, ServiceListSerializer
-from rest_framework import status, permissions,serializers
-from rest_framework.response import Response
 from apps.utility.common import CustomResponse
 from apps.business.serializers import (BusinessProfileSerializer, BusinessProfileCreateSerializer, ServiceSerializer,
                                        ServiceListSerializer)
@@ -48,14 +39,6 @@ class BusinessProfileViewSet(CustomModelViewSet):
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2009"]
         ).success_response(data=serializer.data)
 
-    def list(self, request, *args, **kwargs):
-        self.serializer_class = BusinessGetsSerializer
-        queryset = self.queryset
-        serializer = self.serializer_class(queryset, many=True)
-        return CustomResponse(
-            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
-        ).success_response(data=serializer.data)
-
     def partial_update(self, request, *args, **kwargs):
         """overriding for custom response"""
         instance = self.get_object()
@@ -70,12 +53,13 @@ class BusinessProfileViewSet(CustomModelViewSet):
 
 
 class ServiceViewSet(CustomModelViewSet):
-    """View set class to register user"""
-
+    """View set class to Business service"""
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = ServiceSerializer
+    serializer_class = ServiceListSerializer
     queryset = BusinessService.objects.all()
-    http_method_names = ("post", "get", "patch")
+    http_method_names = ('post', 'get', 'patch')
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('category',)
 
     def get_serializer_class(self):
         """overriding serializer class for dynamic serializer according to request"""
@@ -92,12 +76,4 @@ class ServiceViewSet(CustomModelViewSet):
         serializer.save()
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2008"]
-        ).success_response(data=serializer.data)
-
-    def list(self, request, *args, **kwargs):
-        """overriding for custom response"""
-        queryset = self.queryset
-        serializer = self.serializer_class(queryset, many=True)
-        return CustomResponse(
-            status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
         ).success_response(data=serializer.data)

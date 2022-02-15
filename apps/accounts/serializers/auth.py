@@ -2,16 +2,9 @@
 auth serializer file
 """
 # django imports
-from email import message
-from wsgiref import validate
-from xml.dom.minidom import Attr
-from xml.sax.xmlreader import AttributesImpl
 from django.contrib.auth import get_user_model
-from rest_framework import serializers, status
+from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from apps.utility.common import Response
-from django.core.mail import send_mail
-
 
 # local imports
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
@@ -247,14 +240,13 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
         confirm_password = validate_data.get("confirm_password")
         if not instance.check_password(old_password):
             raise serializers.ValidationError(ERROR_CODE["4002"])
-        if new_password == confirm_password:
-            # updating new password
-            instance.set_password(new_password)
-            instance.save()
-            send_email(instance.email)
-            return instance
-        else:
+        if new_password != confirm_password:
             raise serializers.ValidationError(ERROR_CODE["4006"])
+        # updating new password
+        instance.set_password(new_password)
+        instance.save()
+        send_email(instance.email)
+        return instance
 
 
 # forgot password
@@ -327,7 +319,6 @@ class ForgotSendOtpSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """validating phone no"""
-
         user = User.objects.filter(phone_no=validated_data["phone_no"]).first()
         if user:
             try:
@@ -338,4 +329,4 @@ class ForgotSendOtpSerializer(serializers.Serializer):
                 )
             except Exception:
                 raise serializers.ValidationError(ERROR_CODE["4001"])
-            return validated_data
+        return validated_data
