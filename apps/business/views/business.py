@@ -1,4 +1,5 @@
 # django imports
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, permissions
 from apps.utility.viewsets import CustomModelViewSet
 from apps.utility.common import CustomResponse
@@ -35,7 +36,7 @@ class BusinessProfileViewSet(CustomModelViewSet):
         ).success_response(data=serializer.data)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.queryset
+        queryset = self.get_queryset
         serializer = self.serializer_class(queryset, many=True)
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]
@@ -57,9 +58,11 @@ class BusinessProfileViewSet(CustomModelViewSet):
 class ServiceViewSet(CustomModelViewSet):
     """View set class to register user"""
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = ServiceSerializer
+    serializer_class = ServiceListSerializer
     queryset = BusinessService.objects.all()
     http_method_names = ('post', 'get', 'patch')
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ['category']
 
     def get_serializer_class(self):
         """ overriding serializer class for dynamic serializer according to request """
@@ -80,7 +83,7 @@ class ServiceViewSet(CustomModelViewSet):
 
     def list(self, request, *args, **kwargs):
         """overriding for custom response"""
-        queryset = self.queryset
+        queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return CustomResponse(
             status=status.HTTP_200_OK, detail=SUCCESS_CODE["2000"]

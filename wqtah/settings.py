@@ -55,7 +55,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "rest_framework_simplejwt.token_blacklist",
     "storages",
-    "ckeditor"
+    "ckeditor",
 ]
 
 # local apps list
@@ -123,21 +123,6 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -177,6 +162,11 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.CoreJSONRenderer",
         "rest_framework_swagger.renderers.SwaggerUIRenderer",
         "rest_framework_swagger.renderers.OpenAPIRenderer",
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'apps.utility.pagination.CustomLimitOffsetPagination',
+    # filter backend
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 
@@ -267,4 +257,20 @@ AZURE_STORAGE_KEY = os.getenv("AZURE_STORAGE_KEY")
 AZURE_STORAGE_CONTAINER = os.getenv("AZURE_STORAGE_CONTAINER")
 
 DEFAULT_FILE_STORAGE = 'apps.utility.storage_backend.CustomFileStorage'
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
