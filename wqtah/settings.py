@@ -270,9 +270,6 @@ DEFAULT_FILE_STORAGE = "apps.utility.storage_backend.CustomFileStorage"
 
 # sendgrid config
 
-# SENDGRID_API_KEY = "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"
-
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'

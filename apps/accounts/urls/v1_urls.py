@@ -25,8 +25,10 @@ router.register(r"signup", RegistrationViewSet, basename="signup")
 router.register(r"login", LoginViewSet, basename="login")
 router.register(r"profile", ProfileViewSet, basename="profile")
 router.register(r"updatepassword", UpdatePasswordViewSet, basename="updatepassword")
-router.register(r"forgotsendotp", ForgotSendOTPViewSet, basename="forgotsendotp")
-router.register(r"forgotpassword", ForgotPasswordViewSet, basename="forgotpassword")
+router.register(
+    r"sendotp-reset-password", ForgotSendOTPViewSet, basename="sendotp-reset-password"
+)
+router.register(r"reset-password", ForgotPasswordViewSet, basename="reset-password")
 
 
 # local imports

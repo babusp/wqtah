@@ -2,6 +2,7 @@
 auth serializer file
 """
 # django imports
+from email import message
 from wsgiref import validate
 from xml.dom.minidom import Attr
 from xml.sax.xmlreader import AttributesImpl
@@ -16,7 +17,7 @@ from django.core.mail import send_mail
 from apps.accounts.messages import ERROR_CODE, SUCCESS_CODE
 from apps.accounts.models.auth import User
 from apps.services.twilio_services import send_twilio_otp, verify_twilio_otp
-from apps.services.sendgrid import password_updated_email
+from apps.services.sendgrid import send_email
 
 USER = get_user_model()
 
@@ -228,24 +229,22 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """override to return user response"""
-        return {"message": "password updated successfully"}
+        return {"message": SUCCESS_CODE["2003"]}
 
     def update(self, instance, validate_data):
         old_password = validate_data.get("old_password")
         new_password = validate_data.get("new_password")
         confirm_password = validate_data.get("confirm_password")
         if not instance.check_password(old_password):
-            raise serializers.ValidationError("old_passwrord not match")
+            raise serializers.ValidationError(ERROR_CODE["4002"])
         if new_password == confirm_password:
             # updating new password
             instance.set_password(new_password)
             instance.save()
-            password_updated_email(instance.email)
+            send_email(instance.email)
             return instance
         else:
-            raise serializers.ValidationError(
-                "new_password, confirm_password not match"
-            )
+            raise serializers.ValidationError(ERROR_CODE["4006"])
 
 
 # forgot password
@@ -270,7 +269,7 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """override to return user response"""
-        return {"message": "password updated successfully"}
+        return {"message": SUCCESS_CODE["2003"]}
 
     def create(self, validated_data):
         """overriding create"""
@@ -291,7 +290,7 @@ class ForgotPasswordSerializer(serializers.ModelSerializer):
                         user.set_password(new_password)
                         user.otp_verified = True
                         user.save()
-                        password_updated_email(user.email)
+                        send_email(user.email)
                         return user
                 else:
                     raise serializers.ValidationError(ERROR_CODE["4009"])

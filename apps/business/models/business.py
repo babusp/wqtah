@@ -32,7 +32,6 @@ class BusinessProfile(BaseModel):
     company_phone = models.CharField(max_length=256, null=True, blank=True)
     company_policies = RichTextField(null=True, blank=True)
     is_admin_verified = models.BooleanField(default=False)
-    amenities = models.JSONField(default=list)
 
     def __str__(self):
         return "{}, {}".format(self.email, self.user)

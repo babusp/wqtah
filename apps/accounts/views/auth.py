@@ -25,7 +25,7 @@ from apps.accounts.serializers.auth import (
     ForgotSendOtpSerializer,
     ForgotPasswordSerializer,
 )
-from apps.utility.common import CustomResponse, Response
+from apps.utility.common import CustomResponse
 
 USER = get_user_model()
 
@@ -153,7 +153,7 @@ class UpdatePasswordViewSet(CustomModelUpdateViewSet):
     """ViewSet class for profile"""
 
     serializer_class = UpdatePasswordSerializer
-    # permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
 
 
