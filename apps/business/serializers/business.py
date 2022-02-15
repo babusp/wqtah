@@ -1,21 +1,21 @@
 """
 serializer file
 """
-# from django.db.models import F
+
 from rest_framework import serializers
 
 # local imports
+from apps.accounts.constants import BUSINESS_OWNER
 from apps.accounts.messages import ERROR_CODE
+from apps.business.constants import COMPANY_DETAIL, COMPANY_POLICY, COMPLETED
 from apps.business.models import Amenities
-from apps.business.models.business import (
-    BusinessProfile,
-    User,
-    TimeSlotService,
-    ServiceAmenities,
-    BusinessService,
-)
+
+from apps.business.models.business import (BusinessProfile, User, TimeSlotService, ServiceAmenities, BusinessService,
+                                           BusinessProfileMediaMapping, ServiceMediaMapping)
 from apps.business.models.business import BusinessProfileAmenities
-from apps.business.serializers.amenities import BusinessProfileAmenitySerilizer
+from apps.business.serializers.amenities import AmenitySerializer
+from apps.business.serializers.extra_serializer import (BusinessProfileAttachmentListSerializer,
+                                                        ServiceAttachmentListSerializer)
 from apps.utility.viewsets import validation_error
 
 
@@ -25,6 +25,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
     amenities = serializers.SerializerMethodField(
         method_name="get_amenities", read_only=True
     )
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         """meta class"""
@@ -33,18 +34,25 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_amenities(self, obj):
-        """get amenities"""
-        qs = BusinessProfileAmenities.objects.filter(business_profile=obj)
-        serializer = BusinessProfileAmenitySerilizer(qs, many=True)
+      
+        """ get amenities """
+        qs = Amenities.objects.filter(id__in =obj.businessprofileamenities_set.all().values_list('amenities', flat=True)
+                                      )
+        serializer = AmenitySerializer(qs, many=True)
+        return serializer.data
+
+    def get_attachments(self, obj):
+        """ get attachments """
+        qs = BusinessProfileMediaMapping.objects.filter(
+            id__in=obj.businessprofilemediamapping_set.all())
+        serializer = BusinessProfileAttachmentListSerializer(qs, many=True)
         return serializer.data
 
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
-    """business profile creation"""
 
-    amenities = serializers.SlugRelatedField(
-        queryset=Amenities.objects.all(), slug_field="id", many=True
-    )
+    """ business profile creation """
+    amenities = serializers.ListField(write_only=True)
     user = serializers.SlugRelatedField(queryset=User.objects.all(), slug_field="id")
     location = serializers.CharField(required=True)
 
@@ -52,44 +60,47 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         """meta class"""
 
         model = BusinessProfile
-        fields = (
-            "amenities",
-            "user",
-            "title",
-            "email",
-            "location",
-            "lat",
-            "lng",
-            "description",
-            "level",
-            "company_name",
-            "company_email",
-            "license",
-            "company_phone",
-            "company_policies",
-            "identity_proof",
-        )
+
+        fields = ("amenities", "user", "title", "email", "location", "lat", "lng", "description", "level",
+                  "company_name", "company_email", "license", "company_phone", "is_company_policies_verified",
+                  "company_country_code", "identity_proof", 'identity_file_name')
 
     def to_representation(self, instance):
         """override to return user serialized data"""
         return BusinessProfileSerializer(instance).data
 
+    def validate(self, attrs):
+        """ validating user """
+        if 'user' in attrs:
+            bus_profile_obj = BusinessProfile.objects.filter(user=attrs['user'])
+            if bus_profile_obj.exists():
+                raise validation_error(ERROR_CODE['4015'])
+        return attrs
+
     def create(self, validated_data):
-        """overriding create business profile serializer"""
-        amenities_li = validated_data.pop("amenities")
-        bus_profile_obj = BusinessProfile.objects.filter(email=validated_data["email"])
+
+        """ overriding create business profile serializer """
+        amenities_li = validated_data.pop('amenities')
+        if amenities_li:
+            amenities_li = amenities_li[0].split(",")
+        bus_profile_obj = BusinessProfile.objects.filter(email=validated_data['email'])
         if bus_profile_obj.exists():
-            raise validation_error(ERROR_CODE["4014"])
+            raise validation_error(ERROR_CODE['4014'])
+        validated_data.update({"level": COMPANY_DETAIL})
         instance = BusinessProfile.objects.create(**validated_data)
         for amenities in amenities_li:
-            BusinessProfileAmenities.objects.update_or_create(
-                business_profile=instance, amenities=amenities
-            )
+            BusinessProfileAmenities.objects.update_or_create(business_profile=instance, amenities_id=amenities)
         return instance
 
     def update(self, instance, validated_data):
-        """overriding business profile update serializer"""
-        amenities_li = validated_data.pop("amenities", None)
+        """ overriding business profile update serializer """
+        amenities_li = validated_data.pop('amenities', None)
+        if 'company_email' in validated_data:
+            validated_data.update({"level": COMPANY_POLICY})
+        if 'is_company_policies_verified' in validated_data:
+            validated_data.update({"level": COMPLETED, "is_admin_verified": True, "user__role": BUSINESS_OWNER})
+        instance.__dict__.update(**validated_data)
+        instance.save()
         if amenities_li:
             BusinessProfileAmenities.objects.filter(business_profile=instance).delete()
             for amenities in amenities_li:
@@ -106,7 +117,7 @@ class TimeSlotServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class defining TimeSlotService model and including field
+        Metaclass defining TimeSlotService model and including field
         """
 
         model = TimeSlotService
@@ -138,10 +149,18 @@ class ServiceListSerializer(serializers.ModelSerializer):
     timeslot = serializers.SerializerMethodField(
         method_name="get_timeslot", read_only=True
     )
+    attachments = serializers.SerializerMethodField()
+
+    def get_attachments(self, obj):
+        """ get attachments """
+        qs = ServiceMediaMapping.objects.filter(
+            id__in=obj.servicemediamapping_set.all())
+        serializer = ServiceAttachmentListSerializer(qs, many=True)
+        return serializer.data
 
     class Meta:
         """
-        Meta class defining BusinessService model and including field
+        Metaclass defining BusinessService model and including field
         """
 
         model = BusinessService
@@ -174,7 +193,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         """
-        Meta class defining BusinessService model and including field
+        Metaclass defining BusinessService model and including field
         """
 
         model = BusinessService

@@ -5,7 +5,7 @@ services:
     container_name: qa-nginx
     restart: always
     ports:
-      - "8002:80"
+      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - .:/usr/src/app

@@ -55,6 +55,15 @@ class LoginSerializer(serializers.Serializer):
 
 class UserBasicInfoSerializer(serializers.ModelSerializer):
     """Base class for user profile"""
+    business_profile = serializers.SerializerMethodField()
+
+    def get_business_profile(self, obj):
+        """ business detail """
+        business_profile = obj.businessprofile_set.last()
+        if business_profile:
+            return {"level": business_profile.level, "is_admin_verified": business_profile.is_admin_verified,
+                    'id': business_profile.id}
+        return None
 
     class Meta:
         """
@@ -71,6 +80,7 @@ class UserBasicInfoSerializer(serializers.ModelSerializer):
             "phone_no",
             "otp_verified",
             "role",
+            "business_profile"
         ]
 
 

@@ -21,6 +21,7 @@ class BusinessProfile(BaseModel):
     title = models.CharField(max_length=256)
     email = models.EmailField(max_length=256)
     identity_proof = models.FileField(upload_to="media")
+    identity_file_name = models.CharField(max_length=256, null=True, blank=True)
     location = models.CharField(max_length=256, null=True, blank=True)
     lat = models.CharField(max_length=256, null=True, blank=True)
     lng = models.CharField(max_length=256, null=True, blank=True)
@@ -30,7 +31,8 @@ class BusinessProfile(BaseModel):
     company_email = models.CharField(max_length=256, null=True, blank=True)
     license = models.CharField(max_length=256, null=True, blank=True)
     company_phone = models.CharField(max_length=256, null=True, blank=True)
-    company_policies = RichTextField(null=True, blank=True)
+    company_country_code = models.CharField(max_length=5, null=True, blank=True)
+    is_company_policies_verified = models.BooleanField(default=False)
     is_admin_verified = models.BooleanField(default=False)
 
     def __str__(self):
