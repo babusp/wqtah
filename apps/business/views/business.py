@@ -1,6 +1,7 @@
 # django imports
 from django_filters import rest_framework as filters
 from rest_framework import status, permissions
+from apps.business import serializers
 from apps.utility.viewsets import CustomModelViewSet
 from apps.business.models.business import (
     BusinessProfile,
@@ -43,7 +44,7 @@ class BusinessProfileViewSet(CustomModelViewSet):
         """overriding for custom response"""
         instance = self.get_object()
         serializer = self.get_serializer_class()(
-            instance, data=request.data, context={"user": request.user}, partial=True
+        instance, data=request.data, context={"user": request.user}, partial=True
         )
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
