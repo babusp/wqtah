@@ -54,7 +54,7 @@ class LoginViewSet(CustomModelPostViewSet):
         ).error_message(error=serializer.errors)
 
 
-class RegistrationViewSet(CustomModelPostViewSet):
+class  RegistrationViewSet(CustomModelPostViewSet):
     """View set class to register user"""
 
     serializer_class = RegisterSerializer

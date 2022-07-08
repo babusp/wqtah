@@ -3,7 +3,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from ckeditor.fields import RichTextField
-
+from django.contrib.auth.models import User
 # local imports
 
 from apps.accounts.models.auth import User

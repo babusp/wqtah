@@ -152,9 +152,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class SendOtpSerializer(serializers.Serializer):
     """used to send otp to user phone no"""
 
-    country_code = serializers.CharField(
-        required=True, allow_blank=False, allow_null=False
-    )
+    country_code = serializers.CharField(required=True, allow_blank=False, allow_null=False)
     phone_no = serializers.CharField(required=True, allow_blank=False, allow_null=False)
 
     class Meta:
